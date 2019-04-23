@@ -1,0 +1,259 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<audio controls id="alertaSonido" #alertaSonido style="display:none;"><source src="/assets/sound/SD_NAVIGATE_38.mp3" type="audio/mpeg"></audio>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Datos de cierre</div>
+    </div>
+    <div class="panel-body">
+        <div class="card" role="tabpanel">
+            <ul class="nav nav-tabs nav-fill" role="tablist">
+                <li class="nav-item" [ngClass]="{'active':panelBusqSeleccionado==0}" role="presentation">
+                    <a class="nav-link" [ngClass]="{'show':panelBusqSeleccionado==0}" href="javascript:void(0);" (click)="seleccionatab(0);" aria-controls="home" role="tab" data-toggle="tab" aria-selected="true">
+                        <em class="far fa-clock fa-fw"></em>Datos de mensajeros</a>
+                </li>
+                <li class="nav-item" [ngClass]="{'active':panelBusqSeleccionado==1}" role="presentation">
+                    <a class="nav-link" [ngClass]="{'show':panelBusqSeleccionado==1}" href="javascript:void(0);" (click)="seleccionatab(1);" aria-controls="home" role="tab" data-toggle="tab" aria-selected="true">
+                        <em class="far fa-clock fa-fw"></em>Datos de agentes</a>
+                </li>
+                <li class="nav-item" [ngClass]="{'active':panelBusqSeleccionado==2}" role="presentation">
+                    <a class="nav-link" [ngClass]="{'show':panelBusqSeleccionado==2}" href="javascript:void(0);" (click)="seleccionatab(2);" aria-controls="profile" role="tab" data-toggle="tab" aria-selected="false">
+                        <em class="far fa-money-bill-alt fa-fw"></em>Datos de operador</a>
+                </li>
+            </ul>
+
+            <div class="tab-content p-0">
+                <div class="tab-pane" [ngClass]="{'active show':panelBusqSeleccionado==0}" role="tabpanel">
+                    <div class="row">
+                        <form [formGroup]="formensajero"   class=" form-horizontal col-sm-12 ">
+                            <div class="row">
+                                <div class="col-sm-6">                    
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Fecha de proceso desde</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control input-sm" type="date" formControlName="rutadesde" [formControl]="formensajero.controls['rutadesde']" />
+                                            <span class="text-danger" *ngIf="formensajero.controls['rutadesde'].hasError('date') && (formensajero.controls['rutadesde'].dirty || formensajero.controls['rutadesde'].touched)">Ingrese una fecha valida</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">                    
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Hasta</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control input-sm" type="date" formControlName="rutahasta" [formControl]="formensajero.controls['rutahasta']" />
+                                            <span class="text-danger" *ngIf="formensajero.controls['rutahasta'].hasError('date') && (formensajero.controls['rutahasta'].dirty || formensajero.controls['rutahasta'].touched)">Ingrese una fecha valida</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Sucursal que genera la OS</label>
+                                        <div class="col-sm-9">   
+                                                <ng-select
+                                                [items]="listsucgen" 
+                                                formControlName="sucursalgenera" 
+                                                [formControl]="formensajero.controls['sucursalgenera']" 
+                                                [multiple]="false"
+                                                [closeOnSelect]="true"
+                                                bindLabel="suc_nombre"
+                                                bindValue="suc_id"
+                                                placeholder="Seleccionar"
+                                            >
+                                                <ng-template ng-option-tmp let-item="item">
+                                                    <div>{{item.suc_nombre}}</div>
+                                                </ng-template>
+                                            </ng-select>
+                                            <span class="text-danger" *ngIf="formensajero.controls['sucursalgenera'].hasError('required') && (formensajero.controls['sucursalgenera'].dirty || formensajero.controls['sucursalgenera'].touched)">Sucursal que genera la OS es obligatorio</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Sucursales que distribuyen</label>
+                                        <div class="col-sm-9">   
+                                                <ng-select
+                                                [items]="listsucdist" 
+                                                formControlName="sucursaldist" 
+                                                [formControl]="formensajero.controls['sucursaldist']" 
+                                                [multiple]="true"
+                                                [closeOnSelect]="true"
+                                                bindLabel="suc_nombre"
+                                                bindValue="suc_id"
+                                                placeholder="Seleccionar"
+                                            >
+                                                <ng-template ng-option-tmp let-item="item">
+                                                    <div>{{item.suc_nombre}}</div>
+                                                </ng-template>
+                                            </ng-select>
+                                            <span class="text-danger" *ngIf="formensajero.controls['sucursaldist'].hasError('required') && (formensajero.controls['sucursaldist'].dirty || formensajero.controls['sucursaldist'].touched)">Sucursales que distribuyen es obligatorio</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">                                
+                                <div class="col-sm-1 pull-right" style="padding-right: 110px;" *ngIf="panelBusqSeleccionado==0">
+                                    <button [disabled]="loading" type="button" class="btn btn-primary" (click)="descargarmensajero()">Descargar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane" [ngClass]="{'active show':panelBusqSeleccionado==1}" role="tabpanel">
+                    <div class="row">
+                        <form [formGroup]="formagentes"   class=" form-horizontal col-sm-12 ">
+                            <div class="row">
+                                <div class="col-sm-6">                    
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Fecha de proceso desde</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control input-sm" type="date" formControlName="despdesde" [formControl]="formagentes.controls['despdesde']" />
+                                            <span class="text-danger" *ngIf="formagentes.controls['despdesde'].hasError('date') && (formagentes.controls['despdesde'].dirty || formagentes.controls['despdesde'].touched)">Ingrese una fecha valida</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">                    
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Hasta</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control input-sm" type="date" formControlName="desphasta" [formControl]="formagentes.controls['desphasta']" />
+                                            <span class="text-danger" *ngIf="formagentes.controls['desphasta'].hasError('date') && (formagentes.controls['desphasta'].dirty || formagentes.controls['desphasta'].touched)">Ingrese una fecha valida</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Sucursal que genera la OS</label>
+                                        <div class="col-sm-9">   
+                                                <ng-select
+                                                [items]="listsucgen" 
+                                                formControlName="sucursalgenera" 
+                                                [formControl]="formagentes.controls['sucursalgenera']" 
+                                                [multiple]="false"
+                                                [closeOnSelect]="true"
+                                                bindLabel="suc_nombre"
+                                                bindValue="suc_id"
+                                                placeholder="Seleccionar"
+                                            >
+                                                <ng-template ng-option-tmp let-item="item">
+                                                    <div>{{item.suc_nombre}}</div>
+                                                </ng-template>
+                                            </ng-select>
+                                            <span class="text-danger" *ngIf="formagentes.controls['sucursalgenera'].hasError('required') && (formagentes.controls['sucursalgenera'].dirty || formagentes.controls['sucursalgenera'].touched)">Sucursal que genera la OS es obligatorio</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Sucursales que despachan</label>
+                                        <div class="col-sm-9">   
+                                                <ng-select
+                                                [items]="listsucdist" 
+                                                formControlName="sucursaldesp" 
+                                                [formControl]="formagentes.controls['sucursaldesp']" 
+                                                [multiple]="true"
+                                                [closeOnSelect]="true"
+                                                bindLabel="suc_nombre"
+                                                bindValue="suc_id"
+                                                placeholder="Seleccionar"
+                                            >
+                                                <ng-template ng-option-tmp let-item="item">
+                                                    <div>{{item.suc_nombre}}</div>
+                                                </ng-template>
+                                            </ng-select>
+                                            <span class="text-danger" *ngIf="formagentes.controls['sucursaldesp'].hasError('required') && (formagentes.controls['sucursaldesp'].dirty || formagentes.controls['sucursaldesp'].touched)">Sucursales que despachan es obligatorio</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">                                
+                                <div class="col-sm-1 pull-right" style="padding-right: 110px;" *ngIf="panelBusqSeleccionado==1">
+                                    <button [disabled]="loading" type="button" class="btn btn-primary" (click)="descargaragentes()">Descargar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="tab-pane" [ngClass]="{'active show':panelBusqSeleccionado==2}" role="tabpanel">
+                    <div class="row">
+                        <form [formGroup]="formoperador"  class=" form-horizontal col-sm-12 ">
+                            <div class="row">
+                                <div class="col-sm-6">                    
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Fecha de carga de desde</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control input-sm" type="date" formControlName="cargbasdesde" [formControl]="formoperador.controls['cargbasdesde']" />
+                                            <span class="text-danger" *ngIf="formoperador.controls['cargbasdesde'].hasError('date') && (formoperador.controls['cargbasdesde'].dirty || formoperador.controls['cargbasdesde'].touched)">Ingrese una fecha valida</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">                    
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Hasta</label>
+                                        <div class="col-sm-5">
+                                            <input class="form-control input-sm" type="date" formControlName="cargbashasta" [formControl]="formoperador.controls['cargbashasta']" />
+                                            <span class="text-danger" *ngIf="formoperador.controls['cargbashasta'].hasError('date') && (formoperador.controls['cargbashasta'].dirty || formoperador.controls['cargbashasta'].touched)">Ingrese una fecha valida</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Operador</label>
+                                        <div class="col-sm-9">   
+                                                <ng-select
+                                                [items]="listoperadores" 
+                                                formControlName="operador" 
+                                                [formControl]="formoperador.controls['operador']" 
+                                                [multiple]="false"
+                                                [closeOnSelect]="true"
+                                                bindLabel="emp_abrev"
+                                                bindValue="emp_id"
+                                                placeholder="Seleccionar"
+                                            >
+                                                <ng-template ng-option-tmp let-item="item">
+                                                    <div>{{item.emp_abrev}}</div>
+                                                </ng-template>
+                                            </ng-select>
+                                            <span class="text-danger" *ngIf="formoperador.controls['operador'].hasError('required') && (formoperador.controls['operador'].dirty || formoperador.controls['operador'].touched)">Operador es obligatorio</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">Sucursal que genera la OS</label>
+                                        <div class="col-sm-9">   
+                                                <ng-select
+                                                [items]="listsucgen" 
+                                                formControlName="sucursalgenera" 
+                                                [formControl]="formoperador.controls['sucursalgenera']" 
+                                                [multiple]="false"
+                                                [closeOnSelect]="true"
+                                                bindLabel="suc_nombre"
+                                                bindValue="suc_id"
+                                                placeholder="Seleccionar"
+                                            >
+                                                <ng-template ng-option-tmp let-item="item">
+                                                    <div>{{item.suc_nombre}}</div>
+                                                </ng-template>
+                                            </ng-select>
+                                            <span class="text-danger" *ngIf="formoperador.controls['sucursalgenera'].hasError('required') && (formoperador.controls['sucursalgenera'].dirty || formoperador.controls['sucursalgenera'].touched)">Sucursal que genera la OS es obligatorio</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">                                
+                                <div class="col-sm-1 pull-right" style="padding-right: 110px;" *ngIf="panelBusqSeleccionado==2">
+                                    <button [disabled]="loading" type="button" class="btn btn-primary" (click)="descargaroperador()">Descargar</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,126 @@
+@import '~@swimlane/ngx-datatable/release/index.css';
+@import '~@swimlane/ngx-datatable/release/themes/bootstrap.css';
+@import '~@swimlane/ngx-datatable/release/assets/icons.css';
+
+ .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled) a{
+    color:black;
+}
+/*
+@import '../app/shared/styles/app/variables';
+
+.ngx-datatable.bootstrap {
+    background-color: transparent;
+    box-shadow: 0 0 0 #000;
+}
+
+.ngx-datatable.scroll-vertical {
+    height: 300px;
+}
+
+// workaround for use of detail rows
+// with other table in the same page
+.no-detail-row .datatable-row-detail {
+    display: none !important;
+}
+
+// change color of active cells selected
+.ngx-datatable.bootstrap.single-selection .datatable-body-row.active, .ngx-datatable.bootstrap.single-selection .datatable-body-row.active .datatable-row-group, .ngx-datatable.bootstrap.multi-selection .datatable-body-row.active, .ngx-datatable.bootstrap.multi-selection .datatable-body-row.active .datatable-row-group, .ngx-datatable.bootstrap.multi-click-selection .datatable-body-row.active, .ngx-datatable.bootstrap.multi-click-selection .datatable-body-row.active .datatable-row-group,
+.ngx-datatable.bootstrap.single-selection .datatable-body-row.active:hover, .ngx-datatable.bootstrap.single-selection .datatable-body-row.active:hover .datatable-row-group, .ngx-datatable.bootstrap.multi-selection .datatable-body-row.active:hover, .ngx-datatable.bootstrap.multi-selection .datatable-body-row.active:hover .datatable-row-group, .ngx-datatable.bootstrap.multi-click-selection .datatable-body-row.active:hover, .ngx-datatable.bootstrap.multi-click-selection .datatable-body-row.active:hover .datatable-row-group {
+    background-color: $brand-primary;
+    .datatable-body-cell {
+        color: #fff;
+    }
+}
+// remove link decoration
+.datatable-icon-right {
+    text-decoration: none !important;
+}
+// align table with no data legend
+.ngx-datatable.bootstrap .empty-row {
+    text-align: center;
+    margin-top: 20px;
+}
+// tabele footer
+.ngx-datatable.bootstrap .datatable-footer {
+    background-color: transparent;
+    color: $text-color;
+}
+// table pagination
+
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager a {
+    color: $pagination-color;
+    color:black;
+}
+.pager li > a, .pager li > span {
+    border-color: $pagination-border;
+}
+.ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled).active a, .ngx-datatable.bootstrap .datatable-footer .datatable-pager ul li:not(.disabled):hover a {
+    background-color: $brand-primary;
+    border-color: $brand-primary;
+    color: #fff;
+}
+*/
+
+    .datatable-header-cell {
+      font-weight:bold;
+      text-align:center;
+      border-right: solid 1px #eee;
+      border-top: solid 1px #eee;
+      border-left: solid 1px #eee;
+    }
+
+    .materialmodaltable {
+        border-right: none !important;
+        border-top: none !important;
+        border-left: none !important;
+    }
+
+    .headerdetailrow {
+        border-top:  solid 1px #eee;
+        border-bottom:  solid 1px #eee;
+    }
+
+    .detailrow {
+        border-top:  solid 1px #eee;
+        border-bottom:  solid 1px #eee;
+    }
+
+    .bodydetailrow {
+        border-left: solid 1px #eee;
+    }
+
+    .is-e {
+        color: cornflowerblue;
+    }
+    .is-d {
+        color: purple;
+    }
+    .is-a {
+        color: fuchsia;
+    }
+    .is-r {
+        color: orange;
+    }
+    .is-o {
+        color: dimgray;
+    }
+    .is-i {
+        color: green;
+    }
+    .width {
+        width: 39px !important;
+    }
+    .ngx-datatable.scroll-vertical .datatable-body {
+        overflow-y: auto;
+    }
+    .ngx-datatable.scroll-vertical {
+    height: 70vh;
+    }
+
+    :host ::ng-deep .ngx-datatable .datatable-body .datatable-scroll {
+        display: inherit;
+        }
+
+    .datatable-row-detail {
+            height: auto !important;
+    }

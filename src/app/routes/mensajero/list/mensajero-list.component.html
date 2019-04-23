@@ -1,0 +1,466 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<!--<div class="content-heading">
+	Mensajero
+    <small></small>
+</div>-->
+<div class="panel panel-default">
+   <div class="panel-heading">
+      <div class="panel-title">Lista</div>
+   </div>
+   <div class="panel-body">
+      <div class="row mb-4">
+         <form  [formGroup]="valFormSearch" (submit)="submitFormSearch($event, valFormSearch.value)"   class="col-sm-12 form-horizontal">
+            <div class="row">
+               <div class="col-sm-4">                  
+                  <div class="form-group">
+                     <label class="col-sm-3 control-label">Documento:</label>
+                     <div class="col-sm-9">      
+                        <input type="text" name="documento" class="form-control" [formControl]="valFormSearch.controls['documento']"   />             
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-4">
+                  <div class="form-group">
+                     <label class="col-sm-3 control-label">Nombre:</label>
+                     <div class="col-sm-9">      
+                        <input type="text" name="nombre" class="form-control"  [formControl]="valFormSearch.controls['nombre']" />
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-4">
+                  <div class="form-group">
+                     <label class="col-sm-3 control-label">Apellido:</label>
+                     <div class="col-sm-9">      
+                        <input type="text" name="apellido" class="form-control"  [formControl]="valFormSearch.controls['apellido']" />
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-sm-10">                  
+                  <div class="form-group">
+                      <span class="ball-clip-rotate" style="float:left;" [ngClass]="{hidden : formLoading !== true }">
+                        <div></div>
+                    </span>
+                  </div>
+               </div>
+               <div class="col-sm-2">                  
+                  <div class="form-group">
+                      <button class="btn btn-info" type="submit" [ngClass]="{disabled : formLoading === true }"><i class="fa fa-search"></i>&nbsp;&nbsp;Buscar</button>
+                  </div>
+               </div>
+            </div>
+         </form>
+      </div>
+      <div class="row" style="margin-top:15px;">                                
+         <div class="col-sm-6 text-left">
+            <button [disabled]="loading" type="button" class="btn btn-sm bg-primary-dark" (click)="btnNuevo()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nuevo</button>
+         </div>
+      </div>
+      <hr />      
+      <div *ngIf="rows2.length == 0">
+      <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [limit]="limit" [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+      [externalSorting]="true" [loadingIndicator]="loading" [reorderable]="false"
+      >
+         <ngx-datatable-column prop="men_id" [sortable]="false" >                   
+            <ng-template let-column="column" ngx-datatable-header-template>
+            Documento
+            </ng-template>
+
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template  let-group="group">
+            {{row.per_tipo_documento+' : '+row.per_nro_documento}}
+            </ng-template>
+         </ngx-datatable-column>
+         <ngx-datatable-column prop="men_id" [sortable]="false" >                   
+            <ng-template let-column="column" ngx-datatable-header-template>
+            Nombre
+            </ng-template>
+
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template  let-group="group">
+            {{row.per_nombre1+' '+row.per_nombre2+', '+row.per_apellido1+' '+row.per_apellido2}}
+            </ng-template>
+         </ngx-datatable-column>
+         <ngx-datatable-column prop="persona.per_email" name="Correo" [sortable]="false"></ngx-datatable-column>
+
+         <ngx-datatable-column prop="men_id" [sortable]="false" >                   
+            <ng-template let-column="column" ngx-datatable-header-template>
+            Teléfono
+            </ng-template>
+
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template  let-group="group">
+            {{row.per_telefono1}}
+            <br>
+            {{row.per_telefono2}}
+            </ng-template>
+         </ngx-datatable-column>
+      <!--
+      <ngx-datatable-column prop="persona.per_telefono1" name="Teléfono" [sortable]="false"></ngx-datatable-column>
+      <ngx-datatable-column prop="persona.per_telefono2" name="Teléfono 2" [sortable]="false"></ngx-datatable-column>
+      -->
+
+         <ngx-datatable-column prop="persona.per_fecha_nacimiento"  [sortable]="false">
+
+            <ng-template let-column="column" ngx-datatable-header-template>
+            Fecha <br> de Ingreso
+            </ng-template>
+            <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value | date: 'dd/MM/yyyy'}}
+            </ng-template>
+         </ngx-datatable-column>
+         <ngx-datatable-column prop="persona.per_direccion" name="Dirección"  [sortable]="false"></ngx-datatable-column>
+
+         <ngx-datatable-column name="Distrito" sortable="false" prop="men_id">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+               {{row.ubigeo ? (row.ubigeo.ubi_nom_departamento+' - '+row.ubigeo.ubi_nom_provincia+' - '+row.ubigeo.ubi_nom_distrito) :''}}
+            </ng-template>
+         </ngx-datatable-column>
+
+         <!--<ngx-datatable-column name="Sucursal" sortable="false" prop="suc_nombre">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              {{row.suc_nombre}}
+            </ng-template>
+         </ngx-datatable-column>-->
+
+         <ngx-datatable-column prop="men_activo"  [sortable]="false">
+
+            <ng-template let-column="column" ngx-datatable-header-template>
+            Activo
+            </ng-template>
+            <ng-template let-value="value" ngx-datatable-cell-template>
+            {{value==true?'SI':'NO'}}
+            </ng-template>
+         </ngx-datatable-column>
+
+         <ngx-datatable-column prop="cod_mensajero_courier" name="Cód." [sortable]="false"></ngx-datatable-column>
+
+
+         <ngx-datatable-column name="Acciones" sortable="false" prop="id">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+
+            <button class="btn btn-xs bg-primary-dark" (click)="btnModificar(row)" tooltip="Editar mensajero" placement="top">
+            <i class="fa fa-edit (alias)"></i>
+            </button>
+<!--
+            <button class="btn btn-xs bg-danger" (click)="editRole(row,modalEditRole)" tooltip="Eliminar mensajero" placement="top">
+            <i class="fa fa-trash"></i>
+            </button>-->
+
+            </ng-template>
+         </ngx-datatable-column>
+      </ngx-datatable>
+      </div>
+
+      <div *ngIf="rows2.length > 0">
+         <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [rows]='rows2' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+         [externalSorting]="true" [loadingIndicator]="loading" [reorderable]="false"
+         >
+            <ngx-datatable-column prop="men_id" [sortable]="false" >                   
+               <ng-template let-column="column" ngx-datatable-header-template>
+               Documento
+               </ng-template>
+   
+               <ng-template let-row="row" let-value="value" ngx-datatable-cell-template  let-group="group">
+               {{row.per_tipo_documento+' : '+row.per_nro_documento}}
+               </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="men_id" [sortable]="false" >                   
+               <ng-template let-column="column" ngx-datatable-header-template>
+               Nombre
+               </ng-template>
+   
+               <ng-template let-row="row" let-value="value" ngx-datatable-cell-template  let-group="group">
+               {{row.per_nombre1+' '+row.per_nombre2+', '+row.per_apellido1+' '+row.per_apellido2}}
+               </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="persona.per_email" name="Correo" [sortable]="false"></ngx-datatable-column>
+   
+            <ngx-datatable-column prop="men_id" [sortable]="false" >                   
+               <ng-template let-column="column" ngx-datatable-header-template>
+               Teléfono
+               </ng-template>
+   
+               <ng-template let-row="row" let-value="value" ngx-datatable-cell-template  let-group="group">
+               {{row.per_telefono1}}
+               <br>
+               {{row.per_telefono2}}
+               </ng-template>
+            </ngx-datatable-column>
+   
+            <ngx-datatable-column prop="persona.per_fecha_nacimiento"  [sortable]="false">
+   
+               <ng-template let-column="column" ngx-datatable-header-template>
+               Fecha <br> de Ingreso
+               </ng-template>
+               <ng-template let-value="value" ngx-datatable-cell-template>
+               {{value | date: 'dd/MM/yyyy'}}
+               </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="persona.per_direccion" name="Dirección"  [sortable]="false"></ngx-datatable-column>
+   
+            <ngx-datatable-column name="Distrito" sortable="false" prop="men_id">
+               <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                  {{row.ubigeo ? (row.ubigeo.ubi_nom_departamento+' - '+row.ubigeo.ubi_nom_provincia+' - '+row.ubigeo.ubi_nom_distrito) :''}}
+               </ng-template>
+            </ngx-datatable-column>
+   
+            <ngx-datatable-column prop="men_activo"  [sortable]="false">
+   
+               <ng-template let-column="column" ngx-datatable-header-template>
+               Activo
+               </ng-template>
+               <ng-template let-value="value" ngx-datatable-cell-template>
+               {{value==true?'SI':'NO'}}
+               </ng-template>
+            </ngx-datatable-column>
+   
+            <ngx-datatable-column prop="cod_mensajero_courier" name="Cód." [sortable]="false"></ngx-datatable-column>
+   
+   
+            <ngx-datatable-column name="Acciones" sortable="false" prop="id">
+               <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+   
+               <button class="btn btn-xs bg-primary-dark" (click)="btnModificar(row)" tooltip="Editar mensajero" placement="top">
+               <i class="fa fa-edit (alias)"></i>
+               </button>
+   
+               </ng-template>
+            </ngx-datatable-column>
+         </ngx-datatable>
+      </div>
+
+
+      <div class="row" style="margin-top:15px;">                                
+         <div class="col-sm-6 text-left">
+            <button [disabled]="loading" type="button" class="btn btn-sm bg-primary-dark" (click)="btnNuevo()"><i class="fa fa-plus"></i>&nbsp;&nbsp;Nuevo</button>
+         </div>
+      </div>  
+   </div>
+</div>
+
+<!-- Modal Mensajero -->
+<div class="modal fade " bsModal #modalNuevoMensajero="bs-modal"  role="dialog" aria-labelledby="modalNuevoMensajero" aria-hidden="true" [config]="{backdrop: 'static'}">
+   <div class="modal-dialog modal-lg ">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h4 class="modal-title pull-left">Datos del Mensajero</h4>
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalNuevoMensajero.hide()" [disabled]="formLoading">
+               <span aria-hidden="true">&times;</span>
+            </button>
+         </div>
+
+      <div class="modal-body">
+         <form  [formGroup]="valFormNuevoMensajero" (submit)="submitFormNuevoMensajero($event, valFormNuevoMensajero.value)"   class=" form-horizontal">
+            <div class="row">
+               <div class="col-sm-6">    
+                  <div class="form-group">
+                     <label class="col-sm-4 control-label">Tipo documento:</label>
+                     <div class="col-sm-8">                                  
+                        <ng-select
+                               [items]="tipoDocumentos" 
+                               formControlName="per_tipo_documento" 
+                               [formControl]="valFormNuevoMensajero.controls['per_tipo_documento']" 
+                               [multiple]="false"
+                               [closeOnSelect]="true"
+                               bindLabel="value"
+                               bindValue="value"
+                               placeholder="Seleccionar"
+                               (change)="changeDNI()"
+                           >
+                           <ng-template ng-option-tmp let-item="item">
+                               <div>{{item.value}}</div>
+                               <!--<small><b>Id:</b> {{item.id}} </small>-->
+                           </ng-template>
+                        </ng-select>  
+                        <!--<input type="text" name="per_tipo_documento" class="form-control" [formControl]="valFormNuevoMensajero.controls['per_tipo_documento']"   />    -->
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_tipo_documento'].hasError('required') && (valFormNuevoMensajero.controls['per_tipo_documento'].dirty || valFormNuevoMensajero.controls['per_tipo_documento'].touched)">Tipo obligatorio</span>        
+                     </div>
+                  </div>  
+               </div>
+               <div class="col-sm-6">    
+                  <div class="form-group">
+                     <label class="col-sm-4 control-label">Nro. documento:</label>
+                     <div class="col-sm-8">      
+                        <input type="text" name="per_nro_documento" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_nro_documento']" (change)="changeDNI()" />
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_nro_documento'].hasError('required') && (valFormNuevoMensajero.controls['per_nro_documento'].dirty || valFormNuevoMensajero.controls['per_nro_documento'].touched)">Nro. obligatorio</span>
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_nro_documento'].hasError('pattern') && (valFormNuevoMensajero.controls['per_nro_documento'].dirty || valFormNuevoMensajero.controls['per_nro_documento'].touched)">Nro. erroneo</span>
+                     </div>
+                  </div>  
+               </div>
+            </div>
+
+            <div class="row">
+               <div class="col-sm-6">
+                  <div class="form-group">
+                     <label class="col-sm-4 control-label">Nombre 1:</label>
+                     <div class="col-sm-8">      
+                        <input type="text" name="per_nombre1" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_nombre1']" />
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_nombre1'].hasError('required') && (valFormNuevoMensajero.controls['per_nombre1'].dirty || valFormNuevoMensajero.controls['per_nombre1'].touched)">Nombre obligatorio</span>
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_nombre1'].hasError('pattern') && (valFormNuevoMensajero.controls['per_nombre1'].dirty || valFormNuevoMensajero.controls['per_nombre1'].touched)">Nombre erroneo</span>
+                     </div>
+                  </div>  
+               </div>
+               <div class="col-sm-6">   
+                  <div class="form-group">
+                     <label class="col-sm-4 control-label">Nombre 2:</label>
+                     <div class="col-sm-8">      
+                        <input type="text" name="per_nombre2" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_nombre2']" />
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_nombre2'].hasError('pattern') && (valFormNuevoMensajero.controls['per_nombre2'].dirty || valFormNuevoMensajero.controls['per_nombre2'].touched)">Nombre erroneo</span>
+                     </div>
+                  </div> 
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-sm-6">
+                  <div class="form-group">
+                     <label class="col-sm-4 control-label">Apellido Paterno:</label>
+                     <div class="col-sm-8">      
+                        <input type="text" name="per_apellido1" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_apellido1']" />
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_apellido1'].hasError('required') && (valFormNuevoMensajero.controls['per_apellido1'].dirty || valFormNuevoMensajero.controls['per_apellido1'].touched)">Apellido obligatorio</span>
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_apellido1'].hasError('pattern') && (valFormNuevoMensajero.controls['per_apellido1'].dirty || valFormNuevoMensajero.controls['per_apellido1'].touched)">Apellido erroneo</span>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-6">
+                  <div class="form-group">
+                     <label class="col-sm-4 control-label">Apellido Materno:</label>
+                     <div class="col-sm-8">      
+                        <input type="text" name="per_apellido2" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_apellido2']" />
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_apellido2'].hasError('required') && (valFormNuevoMensajero.controls['per_apellido2'].dirty || valFormNuevoMensajero.controls['per_apellido2'].touched)">Apellido obligatorio</span>
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_apellido2'].hasError('pattern') && (valFormNuevoMensajero.controls['per_apellido2'].dirty || valFormNuevoMensajero.controls['per_apellido2'].touched)">Apellido erroneo</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="form-group">
+               <label class="col-sm-2 control-label">Email:</label>
+               <div class="col-sm-10">      
+                  <input type="text" name="per_email" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_email']" />
+                  <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_email'].hasError('email') && (valFormNuevoMensajero.controls['per_email'].dirty || valFormNuevoMensajero.controls['per_email'].touched)">Email erroneo</span>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-sm-6">
+                  <div class="form-group">
+                     <label class="col-sm-4 control-label">Teléfono 1:</label>
+                     <div class="col-sm-8">      
+                        <input type="text" name="per_telefono1" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_telefono1']" />
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_telefono1'].hasError('pattern') && (valFormNuevoMensajero.controls['per_telefono1'].dirty || valFormNuevoMensajero.controls['per_telefono1'].touched)">Nro. erroneo</span>
+                     </div>
+                  </div>
+               </div>
+               <div class="col-sm-6">
+                  <div class="form-group">
+                     <label class="col-sm-4 control-label">Teléfono 2:</label>
+                     <div class="col-sm-8">      
+                        <input type="text" name="per_telefono2" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_telefono2']" />
+                        <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_telefono2'].hasError('pattern') && (valFormNuevoMensajero.controls['per_telefono2'].dirty || valFormNuevoMensajero.controls['per_telefono2'].touched)">Nro. erroneo</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="form-group">
+               <label class="col-sm-2 control-label">Fecha de ingreso:</label>
+               <div class="col-sm-10">      
+                  <input type="date" name="per_fecha_nacimiento" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_fecha_nacimiento']" />
+                   <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_fecha_nacimiento'].hasError('required') && (valFormNuevoMensajero.controls['per_fecha_nacimiento'].dirty || valFormNuevoMensajero.controls['per_fecha_nacimiento'].touched)">Fecha es obligatorio</span>
+                   <span class="text-danger" *ngIf="valFormNuevoMensajero.controls['per_fecha_nacimiento'].hasError('date') && (valFormNuevoMensajero.controls['per_fecha_nacimiento'].dirty || valFormNuevoMensajero.controls['per_fecha_nacimiento'].touched)">Fecha erronea</span>
+               </div>
+            </div>
+            <div class="form-group">
+               <label class="col-sm-2 control-label">Dirección:</label>
+               <div class="col-sm-10">      
+                  <input type="text" name="per_direccion" class="form-control"  [formControl]="valFormNuevoMensajero.controls['per_direccion']" />
+                   
+               </div>
+            </div>
+            <div class="form-group">
+               <label class="col-sm-2 control-label">Distrito:</label>
+               <div class="col-sm-10">      
+                  <ng-select
+                         [items]="distritos" 
+                         formControlName="ubi_id_distrito" 
+                         [formControl]="valFormNuevoMensajero.controls['ubi_id_distrito']" 
+                         [multiple]="false"
+                         [closeOnSelect]="true"
+                         bindLabel="ubi_nom_distrito"
+                         bindValue="ubi_id_distrito"
+                         placeholder="Seleccionar"
+                     >
+                     <ng-template ng-option-tmp let-item="item">
+                         <div>{{item.ubi_nom_departamento}} - {{item.ubi_nom_provincia}} - {{item.ubi_nom_distrito}}</div>
+                         <!--<small><b>Id:</b> {{item.id}} </small>-->
+                     </ng-template>
+                  </ng-select>  
+                   
+               </div>
+            </div>
+
+            <div class="form-group">
+               <label class="col-sm-2 control-label">Cód:</label>
+               <div class="col-sm-10">      
+                  <input type="text" name="cod_mensajero_courier" class="form-control"  [formControl]="valFormNuevoMensajero.controls['cod_mensajero_courier']" />
+                   
+               </div>
+            </div>
+
+
+            <div class="form-group">
+               <label class="col-sm-2 control-label">Activo</label>
+               <div class="col-sm-1">      
+                  <input type="checkbox" name="men_activo" class="form-control"  [formControl]="valFormNuevoMensajero.controls['men_activo']" />
+               </div>
+            </div>
+            <div class="form-group">
+               <label class="col-sm-2 control-label">Situación laboral:</label>
+               <div class="col-sm-10">      
+                  <ng-select
+                         [items]="situacion" 
+                         formControlName="men_situacion_laboral" 
+                         [formControl]="valFormNuevoMensajero.controls['men_situacion_laboral']" 
+                         [multiple]="false"
+                         [closeOnSelect]="true"
+                         bindLabel="nombre"
+                         bindValue="nombre"
+                         placeholder="Seleccionar"
+                     >
+                     <ng-template ng-option-tmp let-item="item">
+                         <div>{{item.nombre}}</div>
+                     </ng-template>
+                  </ng-select>  
+                   
+               </div>
+            </div>
+            <div class="form-group">
+               <div class="col-sm-6">
+                     <label class="control-label col-md-2">Foto Actual</label>
+                     <div class="col-md-10">
+                        <img src="{{imagen}}"  style="max-width: 200px;max-height: 200px;"/>
+                     </div>
+                        
+               </div>
+
+               <div class="col-sm-6">
+                     <label class="control-label col-md-2">Foto Nueva</label>
+                     <div class="col-md-10">
+                        <input type="file" class="form-control" (change)="handleFileRegistrar($event)" />
+                        <img src="{{valFormNuevoMensajero.controls['imagen'].value}}" style="max-width: 200px;max-height: 200px;"/>
+                  </div>
+               </div>
+
+            </div>
+            <hr>
+            <div class="form-group">
+                <div class="col-sm-8 control-label">
+                    <span class="ball-clip-rotate" style="float:left;" [ngClass]="{hidden : formLoading !== true }">
+                        <div></div>
+                    </span>
+                </div>
+
+                <div class="col-sm-4 control-label">
+                    <button class="btn btn-info" type="submit" [ngClass]="{disabled : formLoading === true }">Guardar</button>
+                </div>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>

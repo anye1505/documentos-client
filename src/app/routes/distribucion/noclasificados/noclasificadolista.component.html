@@ -1,0 +1,116 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Asignaci&oacute;n de no clasificados y fuera de zona</div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <form [formGroup]="frmbusqueda" (submit)="frmbusqueda_submit($event, frmbusqueda.value)"   class=" form-horizontal col-sm-12 ">
+                <div class="row">
+                    <div class="col-sm-4">                    
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">Fecha asignaci&oacute;n</label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="date" formControlName="asignaciondesde" [formControl]="frmbusqueda.controls['asignaciondesde']" />
+                                <span class="text-danger" *ngIf="frmbusqueda.controls['asignaciondesde'].hasError('date') && (frmbusqueda.controls['asignaciondesde'].dirty || frmbusqueda.controls['asignaciondesde'].touched)">Ingrese una fecha valida</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">                    
+                        <div class="form-group">
+                            <label class="col-sm-4 control-label">Hasta</label>
+                            <div class="col-sm-8">
+                                <input class="form-control" type="date" formControlName="asignacionhasta" [formControl]="frmbusqueda.controls['asignacionhasta']" />
+                                <span class="text-danger" *ngIf="frmbusqueda.controls['asignacionhasta'].hasError('date') && (frmbusqueda.controls['asignacionhasta'].dirty || frmbusqueda.controls['asignacionhasta'].touched)">Ingrese una fecha valida</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Usuario</label>
+                            <div class="col-sm-9">
+                                <ng-select
+                                    [items]="listusuarios" 
+                                    formControlName="usuario" 
+                                    [formControl]="frmbusqueda.controls['usuario']" 
+                                    [multiple]="false"
+                                    [closeOnSelect]="true"
+                                    bindLabel="des_nombre"
+                                    bindValue="des_id"
+                                    placeholder="Seleccionar"
+                                >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.des_nombre}}</div>
+                                    </ng-template>
+                                </ng-select>
+                                <span class="text-danger" *ngIf="frmbusqueda.controls['usuario'].hasError('required') && (frmbusqueda.controls['usuario'].dirty || frmbusqueda.controls['usuario'].touched)">Usuario es obligatorio</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 text-center">
+                        <div class="form-group">
+                            <input [disabled]="loading" type="submit" class="btn btn-primary" value="Buscar"/>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <hr style="margin:21px 0px 15px 0px;" />
+        <div class="row" >
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" 
+                    [limit]="limit" [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+                    [externalSorting]="true" [loadingIndicator]="loading" 
+                    [selected]="selected" [selectionType]="'single'" (activate)="onActivate($event)" (select)='onSelect($event)' [reorderable]="false">
+                        <ngx-datatable-column prop="cla_id" name="Id" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="cla_fecha_asig" name="F. Asignación no Clas." [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="motivo" name="Motivo" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="usuario" name="Usuario" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="nro_documentos" name="Nro. Doc." [sortable]="false" [cellClass]="'cells-align-right'"></ngx-datatable-column>
+                        
+                        <ngx-datatable-footer>
+                            <ng-template 
+                                ngx-datatable-footer-template
+                                let-rowCount="rowCount"
+                                let-pageSize="pageSize"
+                                let-selectedCount="selectedCount"
+                                let-curPage="curPage"
+                                let-offset="offset"
+                                let-isVisible="isVisible">
+                                <div class="page-count">
+                                    <span *ngIf="selectedMessage">
+                                    {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+                                    </span>
+                                    <strong>{{rowCount.toLocaleString()}} Total</strong>
+                
+                                    <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+                                            <div></div>
+                                    </div>
+                                </div>
+                                <datatable-pager
+                                    [pagerLeftArrowIcon]="'datatable-icon-left'"
+                                    [pagerRightArrowIcon]="'datatable-icon-right'"
+                                    [pagerPreviousIcon]="'datatable-icon-prev'"
+                                    [pagerNextIcon]="'datatable-icon-skip'"
+                                    [page]="curPage"
+                                    [size]="pageSize"
+                                    [count]="rowCount"
+                                    [hidden]="!((rowCount / pageSize) > 1)"
+                                    (change)="table.onFooterPage($event)">
+                                </datatable-pager>
+                            </ng-template>
+                            </ngx-datatable-footer>
+                    </ngx-datatable>   
+                </div>
+            </div>
+        </div> 
+        <div class="row" style="margin-top:15px;">                                
+            <div class="col-sm-6 text-left">
+                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="btnNuevo_click($event)">Nuevo</button>
+            </div>
+        </div>        
+    </div>  
+</div>  

@@ -1,0 +1,86 @@
+<!-- START Top Navbar-->
+<nav class="navbar topnavbar" role="navigation">
+    <!-- START navbar header-->
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#/">
+            <div id="logo" class="brand-logo">
+                <!--<img class="img-responsive" src="assets/img/logo.png" alt="App Logo" />-->
+            </div>
+            <div class="brand-logo-collapsed">
+                <img class="img-responsive" src="assets/img/icono_documentos.png" alt="App Logo" /><!--Se cambió logo-single.png-->
+            </div>
+        </a>
+    </div>
+    <!-- END navbar header-->
+    <!-- START Nav wrapper-->
+    <div class="nav-wrapper">
+        <!-- START Left navbar-->
+        <ul class="nav navbar-nav">
+            <li>
+                <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                <a class="hidden-xs" trigger-resize="" (click)="toggleCollapsedSideabar()" *ngIf="!isCollapsedText()">
+                    <em class="fa fa-navicon"></em>
+                </a>
+                <!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->
+                <a class="visible-xs sidebar-toggle" (click)="settings.layout.asideToggled =! settings.layout.asideToggled; $event.stopPropagation()">
+                    <em class="fa fa-navicon"></em>
+                </a>               
+            </li>
+            <li>
+                <a>                    
+                    <span >{{user.courier}} - {{user.suc}}</span>
+                </a>
+            </li>
+            <!-- START User avatar toggle-->
+            
+            
+            <!-- END User avatar toggle-->
+            <!-- START lock screen-->
+
+            <!-- END lock screen-->
+        </ul>
+        <!-- END Left navbar-->
+        <!-- START Right Navbar-->
+		
+        <ul class="nav navbar-nav navbar-right">	
+           	
+            <li class="dropdown dropdown-list" dropdown>
+                <a dropdownToggle>                    
+                    <span id="spanUser">{{user.name}}, {{user.surname}}&nbsp;&nbsp;&nbsp;</span><em class="icon-user"></em>
+                    
+                </a>
+
+                <ul *dropdownMenu class="dropdown-menu animated flipInX">
+                    <li>
+                        <!-- START list group-->						
+                        <div class="list-group">
+                            <!-- list item-->
+                            <a class="list-group-item" [routerLink]="['/user/edit']">
+                                Mis datos (<span style="color:darkgray ">{{user.role}}</span>)
+                            </a>
+                             <a class="list-group-item" [routerLink]="['/user/change-password']">
+                                Contraseña
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a  title="Salir" (click)="logout()">
+                    <em class="icon-logout"></em>
+                </a>
+            </li>
+            <!-- Search icon
+            <!-- Fullscreen (only desktops)-->
+            <!-- START Alert menu-->
+            
+            <!-- END Alert menu-->
+            <!-- START Offsidebar button-->
+            
+            <!-- END Offsidebar menu-->
+        </ul>
+        <!-- END Right Navbar-->
+    </div>
+    <!-- END Nav wrapper-->
+</nav>
+<!-- END Top Navbar-->

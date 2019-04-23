@@ -1,0 +1,87 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<div class="content-heading">
+    Distribución
+    <small></small>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Base Prioritario</div>
+    </div>
+    <div class="panel-body">
+        <div class="form-horizontal"> 
+            <div class="form-group">
+                <label class="control-label" class="col-sm-2">Operador</label>
+                <div class="col-sm-10">
+                    <ng-select
+                            [items]="empresas"
+                            [(ngModel)]="formOperador" #ctrl="ngModel"
+                            [multiple]="false"
+                            [closeOnSelect]="true"
+                            bindLabel="emp_abrev"
+                            bindValue="emp_id"
+                            placeholder="Seleccionar operador"
+                        >
+                    </ng-select> 
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <label for="file2" class="file-upload">
+                        <button class="btn btn-primary btn-block">Seleccionar Archivo</button>
+                        <input id="file2" type="file" ng2FileSelect [uploader]="uploader" />
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+            	<div class="col-sm-12" style="margin-bottom: 40px">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                                <th width="50%">Nombre</th>
+                                <th>Tamaño</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr *ngFor="let item of uploader.queue">
+                            <td><strong>{{ item?.file?.name }}</strong></td>
+                            <td  nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                        
+                            <td class="text-center">
+                                <span *ngIf="item.isSuccess"><i class="btn btn-xs btn-success icon icon-check"></i></span>
+                                <span *ngIf="item.isCancel"><i class="btn btn-xs btn-warning icon icon-close"></i></span>
+                                <span *ngIf="item.isError"><i class="btn btn-xs btn-danger icon icon-close"></i></span>
+                            </td>
+                            <td nowrap>
+                                <button type="button" class="btn btn-success btn-xs"
+                                        (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                    <span class="glyphicon glyphicon-upload"></span> Subir
+                                </button>
+                                <!--
+                                <button type="button" class="btn btn-warning btn-xs"
+                                        (click)="item.cancel()" [disabled]="!item.isUploading">
+                                    <span class="glyphicon glyphicon-ban-circle"></span> Cancelar
+                                </button>-->
+                                <button type="button" class="btn btn-danger btn-xs"
+                                        (click)="cancelUpload(item,true)">
+                                    <span class="glyphicon glyphicon-trash"></span> Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+              
+                    <div>
+                        <div>
+                            
+                            <div class="progress" style="">
+                                <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

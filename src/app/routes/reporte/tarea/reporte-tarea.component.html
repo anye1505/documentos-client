@@ -1,0 +1,57 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<div class="content-heading">
+	Bandeja de descarga
+    <small></small>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Tareas</div>
+    </div>
+    <div class="panel-body">
+        <div class="row mb-4">
+            <div class="col-md-2">
+                <input type='text' class="form-control" placeholder='Descripción...' (change)='updateFilter($event)' />
+            </div>
+            <div class="col-md-6">
+			</div>
+			<div class="col-md-2 text-right">
+                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="updateFilter($event)">Refrescar</button>
+            </div>
+            <div class="col-md-2">
+		        <div class="ball-clip-rotate" style="height:20px;float:left;"  [ngClass]="{hidden : loading !== true }">
+		            <div></div>
+		        </div>
+            </div>
+        </div>
+
+	        <hr />
+	        <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [limit]="limit" [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+        			[externalSorting]="true" [loadingIndicator]="loading" [reorderable]="false"
+        		>
+
+	            <ngx-datatable-column prop="tar_descripcion" name="Descripción" ></ngx-datatable-column>
+	              
+	            <ngx-datatable-column prop="tar_fecha_finalizacion"  [sortable]="false">
+
+		            <ng-template let-column="column" ngx-datatable-header-template>
+		            Fecha <br> generación
+		            </ng-template>
+		            <ng-template let-value="value" ngx-datatable-cell-template>
+		            {{value | date: 'dd/MM/yyyy'}}
+		            </ng-template>
+		         </ngx-datatable-column>
+
+	            <ngx-datatable-column prop="tipo.tat_descripcion" name="Tipo"></ngx-datatable-column>
+	            <ngx-datatable-column prop="tar_nro_registros" name="Nro. Registros"></ngx-datatable-column>
+	            
+	           <ngx-datatable-column name="Acciones" sortable="false" prop="id">
+				      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+
+				            <button [hidden]="row.finalizado==true && row.error == null" class="btn btn-xs bg-green-dark" (click)="descarga(row)" tooltip="Descargar" placement="top">
+			              		<i class="fa fa-download"></i>
+				            </button>
+				      </ng-template>
+				</ngx-datatable-column>
+	        </ngx-datatable>
+    </div>
+</div>

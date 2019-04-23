@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Documentos</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="icon" type="image/x-icon" href="icono_documentos.ico">
+    <style>
+        input.form-control { padding:6px !important; }
+        .ng-select .ng-control .ng-value-container,
+        .ng-select.ng-single .ng-control .ng-value-container .ng-input { padding-left:6px !important; }
+        input[type="date"].form-control { padding-right:0px !important; }
+
+        .parpadea {            
+        animation-name: parpadeo;
+        animation-duration: 1s;
+        animation-timing-function: linear;
+        animation-iteration-count: infinite;
+
+        -webkit-animation-name:parpadeo;
+        -webkit-animation-duration: 1s;
+        -webkit-animation-timing-function: linear;
+        -webkit-animation-iteration-count: infinite;
+        }
+
+        @-moz-keyframes parpadeo{  
+        0% { opacity: 1.0; }
+        50% { opacity: 0.0; }
+        100% { opacity: 1.0; }
+        }
+
+        @-webkit-keyframes parpadeo {  
+        0% { opacity: 1.0; }
+        50% { opacity: 0.0; }
+        100% { opacity: 1.0; }
+        }
+
+        @keyframes parpadeo {  
+        0% { opacity: 1.0; }
+        50% { opacity: 0.0; }
+        100% { opacity: 1.0; }
+        }
+    </style>
+</head>
+
+<body>
+    <app-root></app-root>
+    <div class="preloader">
+        <div class="preloader-progress">
+            <div class="preloader-progress-bar"></div>
+        </div>
+    </div>
+</body>
+
+</html>

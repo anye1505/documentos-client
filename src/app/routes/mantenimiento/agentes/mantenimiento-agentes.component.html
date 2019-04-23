@@ -1,0 +1,107 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+
+<div (window:scroll)="scrollFunction()" class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Agentes</div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [rows]='rows' [externalPaging]="true" [count]="count" [externalSorting]="true" [loadingIndicator]="loading" [reorderable]="false">
+                    
+                    <ngx-datatable-column prop="age_id" name=" " [sortable]="false" [resizeable]="true" style="width: 40px !important;"></ngx-datatable-column>
+                    <ngx-datatable-column prop="courier_nombre" name="Courier" [sortable]="false" [resizeable]="true" [canAutoResize]="true"></ngx-datatable-column>
+                    <ngx-datatable-column prop="sucursal_nombre" name="Sucursal" [sortable]="false" [resizeable]="true" [canAutoResize]="true"></ngx-datatable-column>
+                    
+                    <ngx-datatable-column name="Acción" sortable="false" [resizeable]="true" [canAutoResize]="true" prop="">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <button [disabled]="loading2" class="btn btn-danger  btn-xs" (click)="eliminar(row)" tooltip="Eliminar" placement="top" style="margin-left:24px;"><i class="fa fa-trash (alias)"></i></button>
+                        </ng-template> 
+                    </ngx-datatable-column>
+                    
+                    <ngx-datatable-footer>
+                        <ng-template 
+                            ngx-datatable-footer-template
+                            let-rowCount="rowCount"
+                            let-pageSize="pageSize"
+                            let-selectedCount="selectedCount"
+                            let-curPage="curPage"
+                            let-offset="offset"
+                            let-isVisible="isVisible">
+                            <div class="page-count">
+                                <button [disabled]="loading" class="btn btn-primary btn-xs" (click)="modalAgregarAgente.show();"><i class="icon icon-plus"></i></button>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <span *ngIf="selectedMessage">
+                                {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+                                </span>
+                                <strong>{{rowCount.toLocaleString()}} Total</strong>
+            
+                                <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+                                        <div></div>
+                                </div>
+                            </div>
+                            <datatable-pager
+                                [pagerLeftArrowIcon]="'datatable-icon-left'"
+                                [pagerRightArrowIcon]="'datatable-icon-right'"
+                                [pagerPreviousIcon]="'datatable-icon-prev'"
+                                [pagerNextIcon]="'datatable-icon-skip'"
+                                [page]="curPage"
+                                [size]="pageSize"
+                                [count]="rowCount"
+                                [hidden]="!((rowCount / pageSize) > 1)"
+                                (change)="table.onFooterPage($event)">
+                            </datatable-pager>
+                        </ng-template>
+                    </ngx-datatable-footer>
+                </ngx-datatable>   
+                <button (click)="topFunction()" id="myBtn" title="Subir"><em class="fa fa-angle-up fa-lg"></em></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" data-keyboard="false" bsModal #modalAgregarAgente="bs-modal"  role="dialog" aria-labelledby="modalAgregarAgente" aria-hidden="true">
+    <div class="modal-dialog" style="width:850px !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Agregar agente</h4>
+                <button type="button" class="close pull-right" aria-label="Close" [disabled]="loading2" (click)="modalAgregarAgente.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form id="formAgenteSuc" class="form-horizontal" [formGroup]="formAgente" (submit)="agregarAgenteSubmit()"  >
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Sucursal</label>
+                                <div class="col-sm-10">
+                                    <ng-select            
+                                            bindLabel="nombre"
+                                            bindValue="suc_id"
+                                            [items]="listSucursales"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            placeholder="Seleccionar sucursal"
+                                            formControlName="sucursal" 
+                                            [formControl]="formAgente.controls['sucursal']"
+                                        >
+                                    </ng-select> 
+                                    <span class="text-danger" *ngIf="formAgente.controls['sucursal'].hasError('required') && (formAgente.controls['sucursal'].dirty || formAgente.controls['sucursal'].touched)">Sucursal es obligatoria</span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="ball-clip-rotate" style="height:20px;float:left;" [ngClass]="{hidden : loading2 !== true }">
+                    <div></div>
+                </div>
+                <button [disabled]="loading2"  (click)="agregarAgenteSubmit()" class="btn btn-primary">Agregar</button>
+            </div>
+        </div>
+    </div>
+</div>

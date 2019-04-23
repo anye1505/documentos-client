@@ -1,0 +1,245 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<audio controls id="alertaSonido" #alertaSonido style="display:none;"><source src="/assets/sound/SD_NAVIGATE_38.mp3" type="audio/mpeg"></audio>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Reseteo de documentos</div>
+    </div>
+    <form [formGroup]="frmbusqueda" (submit)="frmbusqueda_submit($event, frmbusqueda.value)">
+    <div class="panel-body">
+        <div class="row">
+            <div class="form-horizontal col-sm-12"> 
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">Tipo de reseteo a realizar</label>
+                    <div class="col-sm-8">                            
+                        <ng-select
+                            [items]="listtipos" 
+                            formControlName="tipo" 
+                            [formControl]="frmbusqueda.controls['tipo']" 
+                            [multiple]="false"
+                            [closeOnSelect]="true"
+                            bindLabel="tir_descripcion"
+                            bindValue="tir_id"
+                            placeholder="Seleccionar"
+                            (change)="tipo_change($event)"
+                        >
+                            <ng-template ng-option-tmp let-item="item">
+                                <div>{{item.tir_descripcion}}</div>
+                            </ng-template>
+                        </ng-select>
+                        <span class="text-danger" *ngIf="frmbusqueda.controls['tipo'].hasError('required') && (frmbusqueda.controls['tipo'].dirty || frmbusqueda.controls['tipo'].touched)">Tipo es obligatorio</span>
+                    </div>
+                    <div class="col-sm-2 text-right">
+                        <button [disabled]="loading" type="button" class="btn btn-primary" (click)="btnAgregar_click($event)">Agregar documentos</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr style="margin:21px 0px 15px 0px;" />
+        <div class="row" >
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" 
+                    [limit]="limit" [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+                    [externalSorting]="true" [loadingIndicator]="loading" 
+                    [selected]="selected" [selectionType]="'single'" (activate)="onActivate($event)" (select)='onSelect($event)' [reorderable]="false">
+                        <ngx-datatable-column prop="ope_nombre" name="Operador" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="emp_nombre" name="Cliente" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="prd_nombre" name="Producto" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="gud_numero" name="Despacho" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="courier" name="Courier" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="gui_numero" name="Guía" [sortable]="false"></ngx-datatable-column>                       
+                        <ngx-datatable-column prop="mensajero" name="Mensajero" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="codigo_barra" name="Cód. barra" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="gestion" name="Gestion" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="fecha_ultima_gestion" name="Última gestión" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="orden_courier" name="Orden" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="direccion" name="Dirección" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="destino" name="Destino" [sortable]="false"></ngx-datatable-column>
+                        <!--
+                        <ngx-datatable-column prop="fecha_guia" name="Fecha Guía" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="cuadrante" name="Cuadrante" [sortable]="false"></ngx-datatable-column>
+                        <ngx-datatable-column prop="codigo_barra" name="Cód. Barra" [sortable]="false"></ngx-datatable-column>
+                        
+                        
+                        
+                        <ngx-datatable-column prop="fecha_proceso" name="Orden Fecha" [sortable]="false"></ngx-datatable-column>
+                        
+                -->
+                        <ngx-datatable-column name="Acciones" sortable="false" prop="doc_id" >
+                            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                <button [disabled]="loading" class="btn btn-xs bg-danger-dark" (click)="quitarDocumento(row)" tooltip="Quitar documento" placement="top" style="margin-left:9px;" type="button"><i class="fa fa-trash"></i></button>
+                            </ng-template> 
+                        </ngx-datatable-column>
+                        
+                        <ngx-datatable-footer>
+                            <ng-template 
+                                ngx-datatable-footer-template
+                                let-rowCount="rowCount"
+                                let-pageSize="pageSize"
+                                let-selectedCount="selectedCount"
+                                let-curPage="curPage"
+                                let-offset="offset"
+                                let-isVisible="isVisible">
+                                <div class="page-count">
+                                    <span *ngIf="selectedMessage">
+                                    {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+                                    </span>
+                                    <strong>{{rowCount.toLocaleString()}} Total</strong>
+                
+                                    <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+                                            <div></div>
+                                    </div>
+                                </div>
+                                <datatable-pager
+                                    [pagerLeftArrowIcon]="'datatable-icon-left'"
+                                    [pagerRightArrowIcon]="'datatable-icon-right'"
+                                    [pagerPreviousIcon]="'datatable-icon-prev'"
+                                    [pagerNextIcon]="'datatable-icon-skip'"
+                                    [page]="curPage"
+                                    [size]="pageSize"
+                                    [count]="rowCount"
+                                    [hidden]="!((rowCount / pageSize) > 1)"
+                                    (change)="table.onFooterPage($event)">
+                                </datatable-pager>
+                            </ng-template>
+                            </ngx-datatable-footer>
+                    </ngx-datatable>   
+                </div>
+            </div>
+        </div> 
+        <div class="row" style="margin-top:15px;">   
+            <div class="col-sm-4">
+                <div class="form-group"> 
+                    <label class="col-sm-5 control-label">Total documentos</label>
+                    <div class="col-sm-3">
+                        <input class="form-control" type="text" formControlName="toatldocumentoscampo" [formControl]="frmbusqueda.controls['toatldocumentoscampo']" />
+                        <span class="text-danger" *ngIf="frmbusqueda.controls['toatldocumentos'].hasError('required') && (frmbusqueda.controls['toatldocumentos'].dirty || frmbusqueda.controls['toatldocumentos'].touched)">Debe agregar m&iacute;nimo un documentos</span>
+                    </div>
+                    <label class="col-sm-4 control-label" style="text-align:right;">Justificación del reseteo</label>
+                </div>
+            </div>  
+            <div class="col-sm-6">
+                <div class="form-group"> 
+                    <div class="col-sm-12">
+                        <textarea class="form-control" rows="5" cols="1" formControlName="motivo" [formControl]="frmbusqueda.controls['motivo']" ></textarea>
+                        <span class="text-danger" *ngIf="frmbusqueda.controls['motivo'].hasError('required') && (frmbusqueda.controls['motivo'].dirty || frmbusqueda.controls['motivo'].touched)">Justificación es obligatorio</span>
+                    </div>
+                </div>
+            </div>                              
+            <div class="col-sm-2 text-right">
+                <button [disabled]="loading" type="submit" class="btn btn-primary btn-block" >Resetear</button>
+                <button [disabled]="loading" type="button" class="btn btn-primary btn-block" style="margin-top:15px;" (click)="btnSalir_click($event)">Salir</button>
+            </div>
+        </div>        
+    </div>
+    </form>  
+</div> 
+
+<div class="modal fade " bsModal #ppAgregarDocumentos="bs-modal"  role="dialog" aria-labelledby="ppAgregarDocumentos" aria-hidden="true" (onHidden)="hiddenppAgregarDocumentos()" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Documentos</h4>
+                <button type="button" class="close pull-right" aria-label="Close" [disabled]="loading" (click)="ppAgregarDocumentos.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="frmAgregar" >
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-horizontal col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label col-sm-4">C&oacute;digo de barras</label>
+                                <div class="col-sm-5">
+                                    <input autofocus class="form-control input-sm" #codigobarra type="text" formControlName="codigobarra" [formControl]="frmAgregar.controls['codigobarra']" 
+                                    (keypress)="codigoBarra_keypress(codigobarra, $event)"/>
+                                    <span class="text-danger" *ngIf="frmAgregar.controls['codigobarra'].hasError('required') && (frmAgregar.controls['codigobarra'].dirty || frmAgregar.controls['codigobarra'].touched)">C&oacute;digo barra es obligatorio</span>
+                                </div>
+                                <div class="col-sm-3" role="alert alert alert-info" style="margin-bottom:0px;font-size:1.2em;">
+                                    <label id="lblManualTotal" class="col-sm-3"></label>
+                                </div>
+                                <!--<div class="col-sm-5">
+                                    <input class="form-control input-sm" type="text" #txtcodigobarra formControlName="codigobarra" [formControl]="frmAgregar.controls['codigobarra']" (keydown)="codigoBarra_keydown($event)" />
+                                    <span class="text-danger" *ngIf="frmAgregar.controls['codigobarra'].hasError('required') && (frmAgregar.controls['codigobarra'].dirty || frmAgregar.controls['codigobarra'].touched)">C&oacute;digo barra es obligatorio</span>
+                                </div>
+                                <div class="col-sm-3 text-right">
+                                    <button [disabled]="loading" class="btn btn-primary" type="button" (click)="btnAgregardocumento_click($event, txtcodigobarra)">Agregar</button>
+                                </div>-->
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-4 col-sm-6">
+                                    <ul class="list-group" style="max-height:120px;overflow-y: auto;">
+                                        <li *ngFor="let item of listcodigosbarra; let i = index"  class="list-group-item" style="padding:4px 6px;">{{item}} 
+                                        <div class="pull-right">
+                                        <button class="btn btn-xs" (click)="eliminarCodigoLista(i)" type="button" style="margin-top:-2px;"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                        </li>
+                                    </ul>
+                                </div>                                
+                                <div class="col-sm-3 "></div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12 text-right">
+                                    <button [disabled]="loading" class="btn btn-primary" type="button" (click)="btnAgregardocumento_click($event, alertaSonido)!">Agregar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="col-sm-12 text-right">
+                    <button [disabled]="loading" type="button" class="btn btn-primary" (click)="ppAgregarDocumentos.hide()">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade " bsModal #ppResetearDocumentos="bs-modal"  role="dialog" aria-labelledby="ppResetearDocumentos" aria-hidden="true" (onHidden)="hiddenppResetearDocumentos()" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Resetear documentos</h4>
+                <button type="button" class="close pull-right" aria-label="Close" [disabled]="loading" (click)="ppResetearDocumentos.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="control-label col-sm-12" >¿Está seguro de resetear los documentos?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="ball-clip-rotate" style="height:20px;float:left;" [ngClass]="{hidden : loading !== true }">
+                    <div></div>
+                </div>
+                <button [disabled]="loading" type="button" (click)="btnResetearDocumentos_click()" class="btn btn-primary">SI</button>
+                <button [disabled]="loading" type="button" (click)="ppResetearDocumentos.hide()" class="btn btn-primary">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" bsModal #alertDocumentos="bs-modal"  role="dialog" aria-labelledby="alertDocumentos" aria-hidden="true" (onHidden)="hiddenalertDocumentos()" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12 text-center"><i class="icon icon-exclamation text-danger parpadea" style="font-size:6em;" title=""></i></div>
+                </div>
+                <div class="row" style="margin-top:15px;">
+                    <div class="col-sm-12 text-center" style="font-size:1.5em;"><p id="alertDocumentos_msj" class="text-danger"></p></div>
+                </div>
+            </div>
+            <div class="modal-footer text-center">
+                <button [disabled]="loading"  (click)="Aceptar_alertDocumentos()" class="btn btn-primary">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>

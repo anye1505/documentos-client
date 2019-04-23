@@ -1,0 +1,151 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<!--<div class="content-heading">
+    Procesamiento
+    <small></small>
+</div>-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Mi Consumo</div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <form  [formGroup]="valFormSearch" (submit)="submitFormSearch($event, valFormSearch.value)"   class=" form-horizontal col-sm-12 ">
+                <div class="row">
+                    <div class="col-sm-3">                    
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Año</label>
+                            <div class="col-sm-9">
+                                <select class="form-control input-sm" formControlName="anio" [formControl]="valFormSearch.controls['anio']" >
+                                    <option value="2015">2015</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2018">2018</option>
+                                </select>
+                                <span class="text-danger" *ngIf="valFormSearch.controls['anio'].hasError('required') && (valFormSearch.controls['anio'].dirty || valFormSearch.controls['anio'].touched)">Seleccionar Año</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">                    
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Mes</label>
+                            <div class="col-sm-9">                                
+                                <select class="form-control input-sm" formControlName="mes" [formControl]="valFormSearch.controls['mes']" >
+                                    <option value="01">Enero</option>
+                                    <option value="02">Febrero</option>
+                                    <option value="03">Marzo</option>
+                                    <option value="04">Abril</option>
+                                    <option value="05">Mayo</option>
+                                    <option value="06">Junio</option>
+                                    <option value="07">Julio</option>
+                                    <option value="08">Agosto</option>
+                                    <option value="09">Setiembre</option>
+                                    <option value="10">Octubre</option>
+                                    <option value="11">Noviembre</option>
+                                    <option value="12">Diciembre</option>
+                                </select>
+                                <span class="text-danger" *ngIf="valFormSearch.controls['mes'].hasError('required') && (valFormSearch.controls['mes'].dirty || valFormSearch.controls['mes'].touched)">Seleccionar mes</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 col-sm-offset-9">
+                        <input type="submit" class="btn btn-primary " style="float:right;" value="Buscar"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <hr />
+
+        <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [limit]="limit" [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+                [externalSorting]="true" [loadingIndicator]="loading" [reorderable]="false"
+            >
+
+            <ngx-datatable-column prop="operador_nombre" name="Cliente"></ngx-datatable-column>
+            <ngx-datatable-column prop="tipo" name="Tipo"></ngx-datatable-column>
+            <ngx-datatable-column prop="procesos_cantidad">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Número de archivos
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                {{value | number}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="doc_con_ubigeo">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Con ubigeo
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                {{value | number}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="por_con_ubigeo">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                %
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                {{value | number}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="doc_sin_ubigeo">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Sin ubigeo
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                {{value | number}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="por_sin_ubigeo">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                %
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                {{value | number}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="doc_cantidad">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Total documentos
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template >
+                {{value | number}}
+                </ng-template>
+            </ngx-datatable-column>
+
+          <ngx-datatable-footer>
+          <ng-template 
+            ngx-datatable-footer-template
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset"
+            let-isVisible="isVisible">
+              <div class="page-count">
+                <span *ngIf="selectedMessage">
+                  {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+                </span>
+                <strong>{{rowCount.toLocaleString()}} Total</strong>
+
+                <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+                        <div></div>
+                </div>
+              </div>
+              <datatable-pager
+                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+                  [pagerRightArrowIcon]="'datatable-icon-right'"
+                  [pagerPreviousIcon]="'datatable-icon-prev'"
+                  [pagerNextIcon]="'datatable-icon-skip'"
+                  [page]="curPage"
+                  [size]="pageSize"
+                  [count]="rowCount"
+                  [hidden]="!((rowCount / pageSize) > 1)"
+                  (change)="table.onFooterPage($event)">
+              </datatable-pager>
+          </ng-template>
+        </ngx-datatable-footer>
+        </ngx-datatable>    
+    </div>
+</div>

@@ -1,0 +1,358 @@
+/* You can add global styles to this file, and also import other style files */
+
+//== Vendor
+@import '../node_modules/font-awesome/css/font-awesome.css';
+@import '../node_modules/simple-line-icons/css/simple-line-icons.css';
+
+
+
+@import '../node_modules/spinkit/css/spinkit.css';
+@import '../node_modules/loaders.css/loaders.css';
+
+@import '../node_modules/angular2-toaster/toaster.css';
+
+@import '../node_modules/ng2-dnd/style.css';
+
+@import '../node_modules/ag-grid/dist/styles/ag-grid.css';
+@import '../node_modules/ag-grid/dist/styles/theme-fresh.css';
+
+
+
+@import '../node_modules/jqcloud2/dist/jqcloud.css';
+
+@import '../node_modules/summernote/dist/summernote.css';
+
+@import '../node_modules/fullcalendar/dist/fullcalendar.min.css';
+
+@import '../node_modules/codemirror/lib/codemirror.css';
+
+@import '../node_modules/sweetalert/dist/sweetalert.css';
+
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+//== Bootstrap
+@import "./app/shared/styles/bootstrap.scss";
+//== Application
+@import "./app/shared/styles/app.scss";
+
+
+@import "./assets/style.scss";
+
+.cells-align-right {
+    text-align: right !important;
+    padding-right: 30px !important;
+   }
+
+.ngx-datatable.bootstrap{
+    font-size: 11px !important;    
+}
+
+$spacer: 1rem !default;
+
+$gray-300: #dee2e6 !default;
+$white:    #fff !default;
+
+$body-bg:                   $white !default;
+
+$border-width:                1px !default;
+$table-bg:                    transparent !default;
+$table-cell-padding:          .75rem !default;
+$table-border-width:          $border-width !default;
+$table-border-color:          $gray-300 !default;
+
+.table2 {
+    width: 100%;
+    margin-bottom: $spacer;
+    background-color: $table-bg; // Reset for nesting within parents with `background-color`.
+    font-size: 11px !important;
+    th,
+    td {
+      padding: $table-cell-padding;
+      vertical-align: top;
+      border-top: $table-border-width solid $table-border-color;
+    }
+  
+    thead th {
+      vertical-align: bottom;
+      border-bottom: (2 * $table-border-width) solid $table-border-color;
+    }
+  
+    tbody + tbody {
+      border-top: (2 * $table-border-width) solid $table-border-color;
+    }
+
+    tr{
+      height:0px !important;
+    }
+  
+    .table {
+      background-color: $body-bg;
+    }
+  }
+
+  .table3 {
+    width: 100%;
+    margin-bottom: $spacer;
+    background-color: $table-bg; // Reset for nesting within parents with `background-color`.
+    font-size: 11px !important;
+    th,
+    td {
+      padding: 5px;
+      vertical-align: top;
+      border-top: $table-border-width solid $table-border-color;
+      border-bottom: $table-border-width solid $table-border-color;
+      border-right: $table-border-width solid $table-border-color;
+    }
+  
+    th {
+      vertical-align: bottom;
+      border-bottom: (2 * $table-border-width) solid $table-border-color;
+      border-left: (2 * $table-border-width) solid $table-border-color !important;
+      border-right: (2 * $table-border-width) solid $table-border-color !important;
+      background-color: #fafbfc;
+    }
+  
+    tbody + tbody {
+      border-top: (2 * $table-border-width) solid $table-border-color;
+    }
+
+    tr{
+      height:0px !important;
+    }
+  
+    .table {
+      background-color: $body-bg;
+    }
+  }
+
+  .table4 {
+    width: 100%;
+    margin-bottom: $spacer;
+    background-color: $table-bg; // Reset for nesting within parents with `background-color`.
+    font-size: 11px !important;
+    overflow-x: auto;
+    th,
+    td {
+      padding: $table-cell-padding;
+      vertical-align: top;
+      border-top: $table-border-width solid $table-border-color;
+    }
+  
+    thead th {
+      vertical-align: bottom;
+      border-bottom: (2 * $table-border-width) solid $table-border-color;
+    }
+  
+    tbody + tbody {
+      border-top: (2 * $table-border-width) solid $table-border-color;
+    }
+
+    tr{
+      height:0px !important;
+    }
+  
+    .table {
+      background-color: $body-bg;
+    }
+
+    tr:nth-child(odd){background-color: #f2f2f2}
+  }
+
+ .headbordered> th {
+    border-top: 1px solid $table-border-color;
+    border-bottom: 1px solid $table-border-color;
+    border-right: 1px solid $table-border-color;
+  }
+   
+  .headbordered> th:first-child {
+    border-left: 1px solid $table-border-color;
+  }
+
+.tableborderradius {
+  /*border-radius: 200px 200px 200px 200px;
+  -moz-border-radius: 200px 200px 200px 200px;
+  -webkit-border-radius: 200px 200px 200px 200px;
+  border: 0px solid #000000 !important;*/
+  color: dodgerblue;
+}
+
+.tableborderradius2 {
+  /*border-radius: 200px 200px 200px 200px;
+  -moz-border-radius: 200px 200px 200px 200px;
+  -webkit-border-radius: 200px 200px 200px 200px;
+  border: 0px solid #000000 !important;
+  background-color: white; */color: #656565
+}
+
+@media only screen and (max-width: 767px){
+  .col-xs-3 {
+    width: 30% !important;
+  }
+  .col-xs-4 {
+    width: 30% !important;
+  }
+  .col-xs-5 {
+    width: 30% !important;
+  }
+  .col-xs-6 {
+    width: 30% !important;
+  }
+  .col-xs-7 {
+    width: 30% !important;
+  }
+  .col-xs-8 {
+    width: 30% !important;
+  }
+}
+/*
+@media only screen and (max-width: 767px){
+  .col-xs-4 {
+     width: 100%; 
+  }
+}*/
+  /* Style The Dropdown Button */
+.dropbtn2 {
+  cursor: pointer;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown2 {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content2 {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  right: 0;
+  max-height:200px;
+  overflow:auto; 
+}
+
+/* Links inside the dropdown */
+.dropdown-content2 a {
+  color: black;
+  padding: 2px 6px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content2 a:hover {
+  bottom: 100%;
+  background-color: #f1f1f1
+}
+
+/* Show the dropdown menu on hover */
+.dropdown2:hover .dropdown-content2 {
+  display: block;
+}
+
+#myBtn {
+  display: none; /* Hidden by default */
+  position: fixed; /* Fixed/sticky position */
+  bottom: 20px; /* Place the button at the bottom of the page */
+  right: 20px; /* Place the button 30px from the right */
+  z-index: 99; /* Make sure it does not overlap */
+  border: none; /* Remove borders */
+  outline: none; /* Remove outline */
+  background-color: gray; /* Set a background color */
+  width: 50px;
+  height: 50px;
+  padding: 15px; /* Some padding */
+  /*border-radius: 10px;  Rounded corners */
+  -webkit-border-radius: 35px;
+  -moz-border-radius: 35px;
+  border-radius: 35px;
+  display: none;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+#myBtn em {
+  color: #fff;
+  margin: 0;
+  position: relative;
+  left: 0px;
+  top: -6px;
+  font-size: 19px;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+#myBtn:hover {
+  background-color: #555; /* Add a dark-grey background on hover */
+}
+#myBtn:hover em {
+  color: #fff;
+  top: -11px;
+}
+
+#return-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #555;
+  background: gray;
+  width: 50px;
+  height: 50px;
+  display: block;
+  text-decoration: none;
+  -webkit-border-radius: 35px;
+  -moz-border-radius: 35px;
+  border-radius: 35px;
+  display: none;
+  -webkit-transition: all 0.3s linear;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+#return-to-top em {
+  color: #fff;
+  margin: 0;
+  position: relative;
+  left: 19px;
+  top: 13px;
+  font-size: 19px;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+}
+
+#return-to-top:hover {
+  background: #555;
+}
+#return-to-top:hover em {
+  color: #fff;
+  top: 5px;
+}
+.tablewrap {border-collapse:collapse; table-layout:fixed; width:100%;}
+.tablewrap td {width:50%; word-wrap:break-word;white-space: pre-wrap;white-space: -moz-pre-wrap;}
+
+
+/* Extra Things */
+body{background: #eee ;font-family: 'Open Sans', sans-serif;}h3{font-size: 30px; font-weight: 400;text-align: center;margin-top: 50px;}h3 i{color: #444;}
+
+.ngx-datatable.fixed-header .datatable-header .datatable-header-inner .datatable-header-cell {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: normal !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+/*
+.ngx-datatable.bootstrap .datatable-body .datatable-body-row .datatable-body-cell { -webkit-user-select: initial!important; -moz-user-select: initial!important; -ms-user-select: initial!important; -o-user-select: initial!important; user-select:initial!important; }
+
+.ngx-datatable .datatable-body-cell{ user-select: initial;}*/

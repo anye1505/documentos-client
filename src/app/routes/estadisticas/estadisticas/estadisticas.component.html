@@ -1,0 +1,331 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Proceso</div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <form [formGroup]="valfrmbusqmultiple" (submit)="frmBusquedaMultiple_submit($event, valfrmbusqmultiple.value)"   class=" form-horizontal col-sm-12 ">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Courier</label>
+                            <div class="col-sm-10">                             
+                                <ng-select
+                                    [items]="listcouriers" 
+                                    formControlName="Courier" 
+                                    [formControl]="valfrmbusqmultiple.controls['Courier']" 
+                                    [multiple]="false"
+                                    [closeOnSelect]="true"
+                                    bindLabel="nombre_courier"
+                                    bindValue="id_courier"
+                                    placeholder="Seleccionar"
+                                    (change)="searchCliente($event)"
+                                >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.nombre_courier}}</div>
+                                    </ng-template>
+                                </ng-select>
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Courier'].hasError('required') && (valfrmbusqmultiple.controls['Courier'].dirty || valfrmbusqmultiple.controls['Courier'].touched)">Courier es obligatorio</span>
+                            </div>                           
+                                        
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Cliente</label>
+                            <div class="col-sm-10">                            
+                                <ng-select
+                                    [items]="listclientes" 
+                                    formControlName="Cliente"
+                                    [formControl]="valfrmbusqmultiple.controls['Cliente']" 
+                                    [multiple]="false"
+                                    [closeOnSelect]="true"
+                                    bindLabel="emp_abrev"
+                                    bindValue="cli_id"
+                                    placeholder="Seleccionar"
+                                    (change)="searchProducto($event)"
+                                >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.emp_abrev}}</div>
+                                    </ng-template>
+                                </ng-select>
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Cliente'].hasError('required') && (valfrmbusqmultiple.controls['Cliente'].dirty || valfrmbusqmultiple.controls['Cliente'].touched)">Cliente es obligatorio</span>
+                            </div>
+                        </div>
+                    </div>  
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Producto</label>
+                            <div class="col-sm-10">                            
+                                <ng-select
+                                    [items]="listproductos" 
+                                    formControlName="Producto" 
+                                    [formControl]="valfrmbusqmultiple.controls['Producto']" 
+                                    [multiple]="true"
+                                    [closeOnSelect]="true"
+                                    bindLabel="prd_nombre_docs"
+                                    bindValue="prd_id"
+                                    placeholder="Seleccionar"
+                                >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.prd_nombre_docs}}</div>
+                                    </ng-template>
+                                </ng-select>
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Producto'].hasError('required') && (valfrmbusqmultiple.controls['Producto'].dirty || valfrmbusqmultiple.controls['Producto'].touched)">Producto es obligatorio</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">                    
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">Fecha de corte desde</label>
+                            <div class="col-sm-7">
+                                <input class="form-control input-sm" type="date" formControlName="Inicio" [formControl]="valfrmbusqmultiple.controls['Inicio']" />
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Inicio'].hasError('date') && (valfrmbusqmultiple.controls['Inicio'].dirty || valfrmbusqmultiple.controls['Inicio'].touched)">Ingrese una fecha valida</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">                    
+                        <div class="form-group">
+                            <label class="col-sm-5 control-label">Fecha fin</label>
+                            <div class="col-sm-7">
+                                <input class="form-control input-sm" type="date" formControlName="Fin" [formControl]="valfrmbusqmultiple.controls['Fin']" />
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Fin'].hasError('date') && (valfrmbusqmultiple.controls['Fin'].dirty || valfrmbusqmultiple.controls['Fin'].touched)">Ingrese una fecha valida</span>
+                            </div>
+                        </div>
+                    </div>                                                        
+                </div>
+                <!--<div class="row">                                
+                    <div class="col-sm-offset-6 col-sm-6 text-right">
+                        <input [disabled]="loading" type="submit" class="btn btn-primary " style="float:right;" value="Consultar"/>
+                    </div>
+                </div>    -->          
+            </form>
+        </div>
+
+        <div class="row" id="text" style="height:450px">
+            <div class="text-right queryButton">
+                <input [disabled]="loading" type="submit" class="btn btn-primary " (click)="frmBusquedaMultiple_submit($event, valfrmbusqmultiple.value)" style="float:right;" value="Buscar"/>
+            </div>
+            <div class="col-12-xs col-centered backgrown">
+                <!---->
+                <div class="headerimage">
+                    <img class="img-fluid" src="assets/img/path13282.svg" alt="">
+                    <table class="table-a">
+                        <tr>
+                            <th class="tableborderradius2" style="border: 0px solid black !important;">{{rows[0]?.envio_total}}</th>
+                            <td *ngIf="rows.length === 0" class="tableborderradius" style="border: 0px solid black !important;" style="border: 0px solid black !important;">0%</td>
+                            <td *ngIf="rows.length > 0" class="tableborderradius" style="border: 0px solid black !important;" style="border: 0px solid black !important;">100%</td>
+                        </tr>
+                    </table>
+                    <table class="table-b">
+                        <tr>
+                            <th class="tableborderradius2" style="border: 0px solid black !important;">{{rows[0]?.envio_principal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.envio_principal !== 0" class="tableborderradius" style="border: 0px solid black !important;">
+                                {{rows[0]?.envio_principal_per}}%
+                            </td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.envio_principal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-c">
+                        <tr>
+                            <th class="tableborderradius2" style="border: 0px solid black !important;">{{rows[0]?.en_reparto_principal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.en_reparto_principal !== 0" class="tableborderradius" style="border: 0px solid black !important;">
+                                    {{rows[0]?.en_reparto_principal_per}}%
+                            </td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.en_reparto_principal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-d">
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.entregado_principal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.entregado_principal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.entregado_principal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.entregado_principal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.rezago_principal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.rezago_principal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.rezago_principal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.rezago_principal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.otro_principal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.otro_principal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.otro_principal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.otro_principal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-e">
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.imagen_entrega_principal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.imagen_entrega_principal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.imagen_entrega_principal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.imagen_entrega_principal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.imagen_rezago_principal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.imagen_rezago_principal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.imagen_rezago_principal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.imagen_rezago_principal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-f">
+                        <tr>
+                            <th class="tableborderradius2" style="border: 0px solid black !important;">{{rows[0]?.envio_principal_transporte}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.envio_principal_transporte !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.envio_principal_transporte_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.envio_principal_transporte == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-g">
+                        <tr>
+                            <th class="tableborderradius2" style="border: 0px solid black !important;">{{rows[0]?.envio_principal_sucursal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.envio_principal_sucursal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.envio_principal_sucursal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.envio_principal_sucursal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th class="tableborderradius2" style="border: 0px solid black !important;">{{rows[0]?.envio_sucursal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.envio_sucursal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.envio_sucursal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.envio_sucursal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-h">
+                        <tr>
+                            <th class="tableborderradius2" style="border: 0px solid black !important;">{{rows[0]?.en_reparto_sucursal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.en_reparto_sucursal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.en_reparto_sucursal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.en_reparto_sucursal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-i">
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.entregado_sucursal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.entregado_sucursal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.entregado_sucursal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.entregado_sucursal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.rezago_sucursal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.rezago_sucursal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.rezago_sucursal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.rezago_sucursal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.otro_sucursal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.otro_sucursal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.otro_sucursal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.otro_sucursal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-j">
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.imagen_entrega_sucursal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.imagen_entrega_sucursal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.imagen_entrega_sucursal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.imagen_entrega_sucursal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.imagen_rezago_sucursal}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.imagen_rezago_sucursal !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.imagen_rezago_sucursal_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.imagen_rezago_sucursal == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-k">
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.entregado}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.entregado !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.entregado_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.entregado == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.rezago}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.rezago !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.rezago_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.rezago == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.otro}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.otro !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.otro_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.otro == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                    <table class="table-l">
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.imagen_entrega}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.imagen_entrega !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.imagen_entrega_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.imagen_entrega == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                        <tr>
+                            <th style="border: 0px solid black !important;">{{rows[0]?.imagen_rezago}}</th>
+                            <td *ngIf="rows.length > 0 && rows[0]?.imagen_rezago !== 0" class="tableborderradius" style="border: 0px solid black !important;">{{rows[0]?.imagen_rezago_per}}%</td>
+                            <td *ngIf="rows.length == 0 || (rows.length > 0 && rows[0]?.imagen_rezago == 0)" class="tableborderradius" style="border: 0px solid black !important;">0%</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>          
+        </div>
+        <div class="row">
+                <div class="col-sm-4">
+                    <h3 class="text-center">Gestión de entrega</h3>
+                    <canvas
+                        baseChart
+                        [data]="pieChartDataDelivery"
+                        [labels]="pieChartLabelsDelivery"
+                        [chartType]="pieChartType"
+                        [options]="pieChartOptions"
+                        (chartHover)="chartHovered($event)"
+                        (chartClick)="chartClicked($event)">
+                    </canvas>
+                </div>
+                <div class="col-sm-4">
+                    <h3 class="text-center">Gestión de rezagos</h3>
+                    <canvas
+                        baseChart
+                        [data]="pieChartDataLags"
+                        [labels]="pieChartLabelsLags"
+                        [chartType]="pieChartType4"
+                        [options]="pieChartOptions4"
+                        (chartHover)="chartHovered($event)"
+                        (chartClick)="chartClicked($event)">
+                    </canvas>
+                </div>
+                <div class="col-sm-4">
+                    <h3 class="text-center">Imágenes</h3>
+                    <canvas
+                        baseChart
+                        [data]="pieChartDataImages"
+                        [labels]="pieChartLabelsImages"
+                        [chartType]="pieChartType3"
+                        [options]="pieChartOptions3"
+                        (chartHover)="chartHovered($event)"
+                        (chartClick)="chartClicked($event)">
+                    </canvas>
+                </div>
+            </div>
+            
+    </div>
+</div>
+
+
+
+
+
+
+<!--<div style="overflow-y: scroll;" class="modal fade" bsModal #graficasmodal="bs-modal"  role="dialog" aria-labelledby="graficasmodal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Gráficas</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="graficasmodal.hide()"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div style="overflow-y: auto !important; height: 500px !important;" class="modal-body">
+                <div class="row" style="margin-top:15px;">
+                    <div class="col-sm-12">
+                        <h2 class="text-center">PIE chart using Chartjs and Angular 6</h2>
+                        <canvas
+                            baseChart
+                            [data]="pieChartData"
+                            [labels]="pieChartLabels"
+                            [chartType]="pieChartType"
+                            [options]="pieChartOptions"
+                            (chartHover)="chartHovered($event)"
+                            (chartClick)="chartClicked($event)">
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>-->

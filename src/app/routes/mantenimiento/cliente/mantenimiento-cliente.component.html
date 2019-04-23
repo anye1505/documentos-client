@@ -1,0 +1,516 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<!--<div class="content-heading">
+    Mi configuración
+    <small></small>
+</div>-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Cliente</div>
+    </div>
+    <div class="panel-body">
+
+        <div class="row">
+            <form  [formGroup]="valFormSearch" (submit)="submitFormSearch($event, valFormSearch.value)"   class=" form-horizontal col-sm-12 ">
+                <div class="row">
+                    <div class="col-sm-4">                    
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Operador</label>
+                            <div class="col-sm-9">                                
+                                <ng-select            
+                                                        
+                                        bindLabel="emp_abrev"
+                                        bindValue="emp_id"
+                                        [items]="empresas"
+                                        [multiple]="false"
+                                        [closeOnSelect]="true"
+                                        placeholder="Seleccionar operador"
+                                        formControlName="operador" 
+                                        [formControl]="valFormSearch.controls['operador']"
+                                        (change)="onSelectOperador($event)"
+                                    >
+                                </ng-select> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">                    
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Cliente</label>
+                            <div class="col-sm-9">                                
+                                <ng-select            
+                                                        
+                                        bindLabel="emp_abrev"
+                                        bindValue="emp_id"
+                                        [items]="clientes"
+                                        [multiple]="false"
+                                        [closeOnSelect]="true"
+                                        placeholder="Seleccionar cliente"
+                                        formControlName="cliente" 
+                                        [formControl]="valFormSearch.controls['cliente']"
+                                    >
+                                </ng-select> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4 ">
+                        <input [disabled]="loading" type="submit" class="btn btn-primary " value="Buscar"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="row" style="margin-top:15px;">                          
+            <div class="col-sm-offset-6 col-sm-6 text-right">
+                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="btnExportar_click()">Exportar Excel</button>
+            </div>
+        </div>
+        <hr/>
+		
+  		<ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [limit]="limit" [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"   [externalSorting]="true" [loadingIndicator]="loading" 
+        [selected]="selected" [selectionType]="'single'" (activate)="onActivate($event)" (select)='onSelect($event)' [reorderable]="false"
+
+    	>
+            <ngx-datatable-column prop="cli_id" name="ID" [sortable]="false"></ngx-datatable-column>
+
+            <ngx-datatable-column prop="operador.emp_razon_social"  [sortable]="false">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Operador
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="cliente.emp_ruc"  [sortable]="false">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                RUC
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="cliente.emp_razon_social"  [sortable]="false">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Razón social
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="cliente.emp_abrev"  [sortable]="false">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Nombre abreviado
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="cliente.emp_direccion"  [sortable]="false">
+                <ng-template let-column="column" ngx-datatable-header-template>
+               	Dirección
+                </ng-template>
+            </ngx-datatable-column>
+
+
+            <ngx-datatable-column name="" sortable="false" prop="cli_id" >
+                      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <button  class="btn btn-xs btn-warning" (click)="showModalActualizarCliente(row)" tooltip="Editar" placement="top">
+                                <i class="icon icon-pencil"></i>
+                            </button>
+                      </ng-template> 
+            </ngx-datatable-column>
+
+
+          	<ngx-datatable-footer>
+	          <ng-template 
+	            ngx-datatable-footer-template
+	            let-rowCount="rowCount"
+	            let-pageSize="pageSize"
+	            let-selectedCount="selectedCount"
+	            let-curPage="curPage"
+	            let-offset="offset"
+	            let-isVisible="isVisible">
+	              <div class="page-count">
+	                <button [disabled]="loading" class="btn btn-primary btn-xs" (click)="modalCrearCliente.show();"><i class="icon icon-plus"></i></button>
+	                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	                <span *ngIf="selectedMessage">
+	                  {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+	                </span>
+	                <strong>{{rowCount.toLocaleString()}} Total</strong>
+
+	                <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+	                        <div></div>
+	                </div>
+	              </div>
+	              <datatable-pager
+	                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+	                  [pagerRightArrowIcon]="'datatable-icon-right'"
+	                  [pagerPreviousIcon]="'datatable-icon-prev'"
+	                  [pagerNextIcon]="'datatable-icon-skip'"
+	                  [page]="curPage"
+	                  [size]="pageSize"
+	                  [count]="rowCount"
+	                  [hidden]="!((rowCount / pageSize) > 1)"
+	                  (change)="table.onFooterPage($event)">
+	              </datatable-pager>
+	          </ng-template>
+	        </ngx-datatable-footer>
+        </ngx-datatable> 
+        <hr/>
+        <div class="row mb-4">
+            <div class="col-md-2">
+                <input type='text' class="form-control" placeholder='Buscar nombre de producto' (change)='updateFilter($event)' />
+            </div>
+        </div>
+        <div class="panel panel-default" style="margin-top:15px;">
+        	<div class="panel-head">
+		    &nbsp;&nbsp;<b>Productos</b>
+		    <span *ngIf="clienteSelected!=null">&nbsp;&nbsp;del cliente <b>{{clienteSelected.cliente.emp_razon_social}}</b>
+		    	&nbsp;&nbsp;con operador <b>{{clienteSelected.operador.emp_razon_social}}</b>
+		    </span>
+		    
+        	</div>
+		  	<div class="panel-body">
+                <!--<div class="row mb-4">
+                    <div class="col-md-2">
+                        <input type='text' class="form-control" placeholder='Buscar producto' (change)='updateFilter($event)' />
+                    </div>
+                    <div class="col-md-8">
+                    </div>
+                    <div class="col-md-2">
+                        <div class="ball-clip-rotate" style="height:20px;float:left;"  [ngClass]="{hidden : loading !== true }">
+                            <div></div>
+                        </div>
+                    </div>
+                </div>-->
+		        <ngx-datatable #tableProducto class='bootstrap no-detail-row' [columns]="columnsProductos" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [limit]="limitProductos" [rows]='rowsProductos' (page)="onPageProducto($event)"  [externalPaging]="true" [count]="countProductos"   [externalSorting]="true" [loadingIndicator]="loading" [reorderable]="false" 
+                    >
+                    
+                    <ngx-datatable-column prop="prd_id"  [sortable]="false">
+		                <ng-template let-column="column" ngx-datatable-header-template>
+		                Código Producto
+		                </ng-template>
+		            </ngx-datatable-column>
+
+		            <ngx-datatable-column prop="prd_nombre"  [sortable]="false">
+		                <ng-template let-column="column" ngx-datatable-header-template>
+		                Nombre
+		                </ng-template>
+		            </ngx-datatable-column>
+
+		            <ngx-datatable-column prop="prd_tipo"  [sortable]="false">
+		                <ng-template let-column="column" ngx-datatable-header-template>
+		                Tipo
+		                </ng-template>
+		            </ngx-datatable-column>
+
+		            <ngx-datatable-column prop="prd_nombre_docs"  [sortable]="false">
+		                <ng-template let-column="column" ngx-datatable-header-template>
+		                Nombre docs
+		                </ng-template>
+		            </ngx-datatable-column>
+
+		            <ngx-datatable-column prop="reglaDistribucion.rdi_nombre"  [sortable]="false">
+		                <ng-template let-column="column" ngx-datatable-header-template>
+		               Regla Distribución
+		                </ng-template>
+		            </ngx-datatable-column>
+
+		            <ngx-datatable-column prop="modeloDistribucion.mdi_nombre"  [sortable]="false">
+		                <ng-template let-column="column" ngx-datatable-header-template>
+		               	Modelo Distribucion
+		                </ng-template>
+		            </ngx-datatable-column>
+		            <ngx-datatable-column prop="tipoCargo.tca_nombre"  [sortable]="false">
+		                <ng-template let-column="column" ngx-datatable-header-template>
+		               	Dirección
+		                </ng-template>
+		            </ngx-datatable-column>
+
+                    <ngx-datatable-column prop="imagen_rezago"  [sortable]="false">
+                        <ng-template let-column="column" ngx-datatable-header-template>
+                           Requiere imagen rezago
+                        </ng-template>
+                    </ngx-datatable-column>
+
+                    <ngx-datatable-column name="" sortable="false" prop="cli_id" >
+                              <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                                    <button  class="btn btn-xs btn-warning" (click)="showModalActualizarProducto(row)" tooltip="Editar" placement="top">
+                                        <i class="icon icon-pencil"></i>
+                                    </button>
+                              </ng-template> 
+                    </ngx-datatable-column>
+
+		          	<ngx-datatable-footer>
+			          <ng-template 
+			            ngx-datatable-footer-template
+			            let-rowCount="rowCount"
+			            let-pageSize="pageSize"
+			            let-selectedCount="selectedCount"
+			            let-curPage="curPage"
+			            let-offset="offset"
+			            let-isVisible="isVisible">
+			              <div class="page-count">
+			                <button [disabled]="loading" class="btn btn-primary btn-xs" (click)="validar();"><i class="icon icon-plus"></i></button>
+			                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			                <span *ngIf="selectedMessage">
+			                  {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+			                </span>
+			                <strong>{{rowCount.toLocaleString()}} Total</strong>
+
+			                <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+			                        <div></div>
+			                </div>
+			              </div>
+			              <datatable-pager
+			                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+			                  [pagerRightArrowIcon]="'datatable-icon-right'"
+			                  [pagerPreviousIcon]="'datatable-icon-prev'"
+			                  [pagerNextIcon]="'datatable-icon-skip'"
+			                  [page]="curPage"
+			                  [size]="pageSize"
+			                  [count]="rowCount"
+			                  [hidden]="!((rowCount / pageSize) > 1)"
+			                  (change)="tableProducto.onFooterPage($event)">
+			              </datatable-pager>
+			          </ng-template>
+			        </ngx-datatable-footer>
+		        </ngx-datatable>
+		  	</div>
+		</div>
+    </div>
+</div>
+
+
+<div class="modal fade " bsModal #modalCrearCliente="bs-modal"  role="dialog" aria-labelledby="modalCrearCliente" aria-hidden="true" (onHidden)="hiddenModal()">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Registrar cliente</h4>
+                <button type="button" class="close pull-right" aria-label="Close" [disabled]="loading" (click)="modalCrearCliente.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+            	<div class="row">
+                    <div class="col-sm-12">
+                        <form id="formRegistrarCliente" class="form-horizontal" [formGroup]="valFormRegistrarCliente" (submit)="submitRegistrarCliente($event, valFormRegistrarCliente.value)"  >
+                            <input type="hidden"   [formControl]="valFormRegistrarCliente.controls['id']"  class="form-control"/>
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" >Operador</label>
+                                <div class="col-sm-10">
+                                    <ng-select            
+                                                            
+                                            bindLabel="emp_abrev"
+                                            bindValue="emp_id"
+                                            [items]="empresas"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            placeholder="Seleccionar operador"
+                                            formControlName="operador" 
+                                            [formControl]="valFormRegistrarCliente.controls['operador']"
+                                        >
+                                    </ng-select> 
+                                    <span class="text-danger" *ngIf="valFormRegistrarCliente.controls['operador'].hasError('required') && (valFormRegistrarCliente.controls['operador'].dirty || valFormRegistrarCliente.controls['operador'].touched)">Operador es obligatorio</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Cliente</label>
+                                <div class="col-sm-10">
+                                    <ng-select            
+                                                            
+                                            bindLabel="emp_razon_social"
+                                            bindValue="emp_id"
+                                            [items]="empresasTotal"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            placeholder="Seleccionar cliente"
+                                            formControlName="cliente" 
+                                            [formControl]="valFormRegistrarCliente.controls['cliente']"
+                                            (change)="onSelectClienteRegistrarCliente($event)"
+                                        >
+                                    </ng-select> 
+                                    <span class="text-danger" *ngIf="valFormRegistrarCliente.controls['cliente'].hasError('required') && (valFormRegistrarCliente.controls['cliente'].dirty || valFormRegistrarCliente.controls['cliente'].touched)">Operador es obligatorio</span>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" >RUC</label>
+                                <div class="col-sm-10">
+                                    <input type="text"   [formControl]="valFormRegistrarCliente.controls['ruc']"  class="form-control"/>
+                                    <span class="text-danger" *ngIf="valFormRegistrarCliente.controls['ruc'].hasError('required') && (valFormRegistrarCliente.controls['ruc'].dirty || valFormRegistrarCliente.controls['ruc'].touched)">RUC es obligatorio</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" >Nombre Abreviado</label>
+                                <div class="col-sm-10">
+                                    <input type="text"   [formControl]="valFormRegistrarCliente.controls['abreviado']"  class="form-control"/>
+                                    <span class="text-danger" *ngIf="valFormRegistrarCliente.controls['abreviado'].hasError('required') && (valFormRegistrarCliente.controls['abreviado'].dirty || valFormRegistrarCliente.controls['abreviado'].touched)">Abreviado es obligatorio</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" >Dirección</label>
+                                <div class="col-sm-10">
+                                    <input type="text"   [formControl]="valFormRegistrarCliente.controls['direccion']"  class="form-control"/>
+                                    <span class="text-danger" *ngIf="valFormRegistrarCliente.controls['direccion'].hasError('required') && (valFormRegistrarCliente.controls['direccion'].dirty || valFormRegistrarCliente.controls['direccion'].touched)">Dirección es obligatorio</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Distrito</label>
+                                <div class="col-sm-10">
+                                    <ng-select            
+                                                            
+                                            bindLabel="distrito"
+                                            bindValue="ubi_id_distrito"
+                                            [items]="distritos"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            placeholder="Seleccionar distrito"
+                                            formControlName="distrito" 
+                                            [formControl]="valFormRegistrarCliente.controls['distrito']"
+                                        >
+                                    </ng-select> 
+                                    <span class="text-danger" *ngIf="valFormRegistrarCliente.controls['distrito'].hasError('required') && (valFormRegistrarCliente.controls['distrito'].dirty || valFormRegistrarCliente.controls['distrito'].touched)">Distrito es obligatorio</span>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="ball-clip-rotate" style="height:20px;float:left;" [ngClass]="{hidden : loading !== true }">
+                    <div></div>
+                </div>
+                <button [disabled]="loading"  form="formRegistrarCliente" class="btn btn-primary">Registrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade " bsModal #modalCrearProducto="bs-modal"  role="dialog" aria-labelledby="modalCrearProducto" aria-hidden="true" (onHidden)="hiddenModalCrearProducto()">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Registrar producto</h4>
+                <button type="button" class="close pull-right" aria-label="Close" [disabled]="loading" (click)="modalCrearProducto.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+            	<div class="row">
+                    <div class="col-sm-12">
+                        <form id="formRegistrarProducto" class="form-horizontal" [formGroup]="valFormRegistrarProducto" (submit)="submitRegistrarProducto($event, valFormRegistrarProducto.value)"  >
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" >Tipo de Producto</label>
+                                <div class="col-sm-10">
+                                    <ng-select
+                                            bindLabel="prd_tipo"
+                                            bindValue="prd_tipo"
+                                            [items]="tiposProd"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            placeholder="Seleccionar Tipo de Producto"
+                                            formControlName="prd_tipo" 
+                                            [formControl]="valFormRegistrarProducto.controls['prd_tipo']"
+                                        >
+                                    </ng-select> 
+                                    <span class="text-danger" *ngIf="valFormRegistrarProducto.controls['prd_tipo'].hasError('required') && (valFormRegistrarProducto.controls['prd_tipo'].dirty || valFormRegistrarProducto.controls['prd_tipo'].touched)">Tipo de producto es obligatorio</span>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" >Código o nombre</label>
+                                <div class="col-sm-10">
+                                    <input type="text"   [formControl]="valFormRegistrarProducto.controls['nombre']"  class="form-control"/>
+                                    <span class="text-danger" *ngIf="valFormRegistrarProducto.controls['nombre'].hasError('required') && (valFormRegistrarProducto.controls['nombre'].dirty || valFormRegistrarProducto.controls['nombre'].touched)">Nombre es obligatorio</span>
+                                </div>
+                            </div>
+
+
+            				<div class="form-group">
+                                <label class="control-label col-sm-2" >Nombre docs</label>
+                                <div class="col-sm-10">
+                                    <input type="text"   [formControl]="valFormRegistrarProducto.controls['nombre_docs']"  class="form-control"/>
+                                    <span class="text-danger" *ngIf="valFormRegistrarProducto.controls['nombre_docs'].hasError('required') && (valFormRegistrarProducto.controls['nombre_docs'].dirty || valFormRegistrarProducto.controls['nombre_docs'].touched)">Nombre Docs es obligatorio</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" >Modelo distribución</label>
+                                <div class="col-sm-10">
+                                    <ng-select            
+                                                            
+                                            bindLabel="mdi_nombre"
+                                            bindValue="mdi_id"
+                                            [items]="modeloDistribucion"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            placeholder="Seleccionar Modelo distribucion"
+                                            formControlName="modeloDistribucion" 
+                                            [formControl]="valFormRegistrarProducto.controls['modeloDistribucion']"
+                                        >
+                                    </ng-select> 
+                                    <span class="text-danger" *ngIf="valFormRegistrarProducto.controls['modeloDistribucion'].hasError('required') && (valFormRegistrarProducto.controls['modeloDistribucion'].dirty || valFormRegistrarProducto.controls['modeloDistribucion'].touched)">Modelo Distribución es obligatorio</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Regla Distribución</label>
+                                <div class="col-sm-10">
+                                    <ng-select            
+                                                            
+                                            bindLabel="rdi_nombre"
+                                            bindValue="rdi_id"
+                                            [items]="reglaDistribucion"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            placeholder="Seleccionar Regla Distribución"
+                                            formControlName="reglaDistribucion" 
+                                            [formControl]="valFormRegistrarProducto.controls['reglaDistribucion']"
+                                        >
+                                    </ng-select> 
+                                    <span class="text-danger" *ngIf="valFormRegistrarProducto.controls['reglaDistribucion'].hasError('required') && (valFormRegistrarProducto.controls['reglaDistribucion'].dirty || valFormRegistrarProducto.controls['reglaDistribucion'].touched)">Regla Distribución es obligatorio</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-2">Tipo Cargo</label>
+                                <div class="col-sm-10">
+                                    <ng-select            
+                                                            
+                                            bindLabel="tca_nombre"
+                                            bindValue="tca_id"
+                                            [items]="tipoCargo"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            placeholder="Seleccionar Regla Distribución"
+                                            formControlName="tipoCargo" 
+                                            [formControl]="valFormRegistrarProducto.controls['tipoCargo']"
+                                        >
+                                    </ng-select> 
+                                    <span class="text-danger" *ngIf="valFormRegistrarProducto.controls['tipoCargo'].hasError('required') && (valFormRegistrarProducto.controls['tipoCargo'].dirty || valFormRegistrarProducto.controls['tipoCargo'].touched)">Tipo cargo es obligatorio</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-1 col-sm-1">      
+                                   <input type="checkbox" name="prd_imagen_rezago" class="form-control pull-right"  [formControl]="valFormRegistrarProducto.controls['prd_imagen_rezago']" />
+                                </div>
+                                <label class="col-sm-4 control-label pull-left">Requiere imagen rezago</label>
+                             </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <div class="ball-clip-rotate" style="height:20px;float:left;" [ngClass]="{hidden : loading !== true }">
+                    <div></div>
+                </div>
+                <button [disabled]="loading"  form="formRegistrarProducto" class="btn btn-primary">Registrar</button>
+            </div>
+
+        </div>
+    </div>
+</div>

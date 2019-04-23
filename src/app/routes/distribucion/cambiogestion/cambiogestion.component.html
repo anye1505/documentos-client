@@ -1,0 +1,291 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<audio controls id="alertaSonido" #alertaSonido style="display:none;"><source src="/assets/sound/SD_NAVIGATE_38.mp3" type="audio/mpeg"></audio>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Cambio de Gestión</div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="card" role="tabpanel">
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                    <li class="nav-item" [ngClass]="{'active':panelBusqSeleccionado==0}" role="presentation">
+                        <a class="nav-link" [ngClass]="{'show':panelBusqSeleccionado==0}" href="javascript:void(0);" (click)="seleccionatab(0);" aria-controls="home" role="tab" data-toggle="tab" aria-selected="true">
+                            <em class="far fa-clock fa-fw"></em>Individual</a>
+                    </li>
+                    <li class="nav-item" [ngClass]="{'active':panelBusqSeleccionado==1}" role="presentation">
+                        <a class="nav-link" [ngClass]="{'show':panelBusqSeleccionado==1}" href="javascript:void(0);" (click)="seleccionatab(1);" aria-controls="profile" role="tab" data-toggle="tab" aria-selected="false">
+                            <em class="far fa-money-bill-alt fa-fw"></em>Masivo </a>
+                    </li>
+                </ul>
+                <div class="tab-content p-0">
+                    <div class="tab-pane" [ngClass]="{'active show':panelBusqSeleccionado==0}" role="tabpanel">
+                        <div class="row">
+                            <form [formGroup]="frmindividual" class=" form-horizontal col-sm-12 ">
+                                <div class="row">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-sm-3">
+                                                <!--<input class="radio_inline" type="radio" name="Opcion" id="Opcion3" value="2"  #Opcion3 (click)="Opcion_click(Opcion3.value)"/>-->
+                                                C&oacute;digos de barras</label>
+                                            <div class="col-sm-6">
+                                                <input class="form-control input-sm" #codigoBarra type="text" formControlName="codigoBarra" [formControl]="frmindividual.controls['codigoBarra']" 
+                                                (keypress)="codigoBarra_keypress(codigoBarra, $event)"/>
+                                            </div>
+                                            <div class="col-sm-3" role="alert alert alert-info" style="margin-bottom:0px;font-size:1.2em;">
+                                                <label id="lblManualTotal" class="col-sm-3"></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-3 col-sm-6">
+                                                <ul class="list-group" style="max-height:120px;overflow-y: auto;">
+                                                    <li *ngFor="let item of listcodigosbarra; let i = index"  class="list-group-item" style="padding:4px 6px;">{{item}} 
+                                                    <div class="pull-right">
+                                                    <button class="btn btn-xs" (click)="eliminarCodigoLista(i)" type="button" style="margin-top:-2px;"><i class="fa fa-trash"></i></button>
+                                                    </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        
+                                        <!--<div class="form-group">
+                                            <label class="col-sm-3 control-label">Mensajero</label>
+                                            <div class="col-sm-6">
+                                                <ng-select
+                                                    [items]="listmensajeros" 
+                                                    formControlName="Mensajero" 
+                                                    [formControl]="frmindividual.controls['Mensajero']" 
+                                                    [multiple]="false"
+                                                    [closeOnSelect]="true"
+                                                    bindLabel="men_nombre"
+                                                    bindValue="men_id"
+                                                    placeholder="Seleccionar"
+                                                >
+                                                    <ng-template ng-option-tmp let-item="item">
+                                                        <div>{{item.men_nombre}}</div>
+                                                    </ng-template>
+                                                </ng-select>
+                                                <span class="text-danger" *ngIf="frmindividual.controls['Mensajero'].hasError('required') && (frmindividual.controls['Mensajero'].dirty || frmindividual.controls['Mensajero'].touched)">Mensajero es obligatorio</span>
+                                            </div>
+                                        </div>-->
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Fecha de Entrega</label>
+                                            <div class="col-sm-6">
+                                                <input [max]="max" class="form-control input-sm" type="date" formControlName="FechaEntrega" [formControl]="frmindividual.controls['FechaEntrega']" />
+                                                <span class="text-danger" *ngIf="frmindividual.controls['FechaEntrega'].hasError('date') && (frmindividual.controls['FechaEntrega'].dirty || frmindividual.controls['FechaEntrega'].touched)">Ingrese una fecha valida</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Motivo</label>
+                                            <div class="col-sm-6">
+                                                    <ng-select
+                                                    [items]="listmotivos" 
+                                                    formControlName="Motivo" 
+                                                    [formControl]="frmindividual.controls['Motivo']" 
+                                                    [multiple]="false"
+                                                    [closeOnSelect]="true"
+                                                    bindLabel="ges_nombre"
+                                                    bindValue="ges_id"
+                                                    placeholder="Seleccionar"
+                                                >
+                                                    <ng-template ng-option-tmp let-item="item">
+                                                        <div>{{item.ges_nombre}}</div>
+                                                    </ng-template>
+                                                </ng-select>
+                                                <span class="text-danger" *ngIf="frmindividual.controls['Motivo'].hasError('required') && (frmindividual.controls['Motivo'].dirty || frmindividual.controls['Motivo'].touched)">Motivo es obligatorio</span>                          
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-3 col-sm-6" *ngIf="count_rango > 0">
+                                                <div style="max-height:168px;overflow-y:auto;">
+                                                <table class="table table-condensed table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th width="35%" class="text-center">{{lbltituloprocesados}}</th>
+                                                        <th class="text-center">Motivo</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let item of rows_rango">
+                                                        <td class="text-center"><strong>{{ item?.codigo_barra }}</strong></td>
+                                                        <td class="text-center"  nowrap>{{ item?.observacion }}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-7 col-sm-2">
+                                                <button [disabled]="loading" class="btn btn-primary btn-block" type="button" (click)="btnActualizar_click($event,alertaSonido)">Guardar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="tab-pane" [ngClass]="{'active show':panelBusqSeleccionado==1}"  role="tabpanel">
+                        <div class="row">
+                            <form [formGroup]="frmasivo" class=" form-horizontal col-sm-12 ">
+                                <div class="row">
+                                    <div class="form-horizontal">              
+                                        <div class="form-group">
+                                            <div class="row">
+                                                <label class="col-sm-3 control-label">Archivo de texto (.txt) con c&oacute;digos de barras</label>
+                                                <div class="col-sm-6">
+                                                    <label for="file2" class="file-upload">
+                                                        <button class="btn btn-primary btn-block">Seleccionar Archivo</button>
+                                                        <input (change)="file()" id="file2" type="file" ng2FileSelect [uploader]="uploader2" formControlName="Archivo" [formControl]="frmasivo.controls['Archivo']"/>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <label class="col-sm-3 control-label" style="padding-left:50px !important;text-align:left;">El archivo de texto debe contener código de barra, f. entrega (aaaa-mm-dd) y motivo.</label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group" *ngIf="uploader2.queue.length > 0">
+                                            <div class="col-sm-offset-1 col-sm-10">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th width="50%">Nombre</th>
+                                                        <th>Tamaño</th>
+                                                        <th>Estado</th>
+                                                        <th>Acci&oacute;n</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let item of uploader2.queue">
+                                                        <td><strong>{{ item?.file?.name }}</strong></td>
+                                                        <td  nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                                                        <td class="text-center">
+                                                            <span *ngIf="item.isSuccess"><i class="icon icon-check" style="color:#5cb85c;"></i></span>
+                                                            <span *ngIf="item.isCancel"><i class="icon icon-close" style="color:#d9534f;"></i></span>
+                                                            <span *ngIf="item.isError"><i class="icon icon-close" style="color:#d9534f;"></i></span>
+                                                        </td>
+                                                        <td nowrap>
+                                                            <button type="button" class="btn btn-success btn-xs"
+                                                                (click)="btnActualizarMasivo_click($event,alertaSonido)" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                                            <span class="icon icon-cloud-upload"></span> Subir
+                                                            </button>
+                                                            <button [disabled]="loading" class="btn btn-xs bg-danger-dark" (click)="item.remove();" tooltip="Quitar archivo" placement="top" type="button"><i class="fa fa-trash"></i></button>                                                                
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-3 col-sm-6" *ngIf="count_rango_masivo > 0">
+                                                <p style="text-align:center;">{{observacion}}</p>
+                                                <div *ngIf="count_rango_masivo > 1" style="max-height:168px;overflow-y:auto;">
+                                                <table class="table table-condensed table-striped">
+                                                    <thead>
+                                                    <tr>
+                                                        <th width="35%" class="text-center">{{lbltituloprocesadosmasivo}}</th>
+                                                        <th class="text-center">Motivo</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr *ngFor="let item of rows_rango_masivo">
+                                                        <td class="text-center"><strong>{{ item?.codigo_barra }}</strong></td>
+                                                        <td class="text-center" nowrap>{{ item?.observacion }}</td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                                </div>
+                                            </div>
+                                        </div><!--
+                                        <div class="form-group">
+                                            <div class="col-sm-offset-7 col-sm-2">
+                                                <button [disabled]="loading" class="btn btn-primary btn-block" type="button" (click)="btnActualizarMasivo_click($event,alertaSonido)">Guardar</button>
+                                            </div>
+                                        </div>   -->                                   
+                                    </div>
+                                </div>
+                            </form>
+                        </div>   
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top:15px;">                                
+            <div class="col-sm-6 text-left">
+                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="btnVolver($event)">Volver</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade " bsModal #modalDescargarGestion="bs-modal"  role="dialog" aria-labelledby="modalDescargarGestion" aria-hidden="true" (onHidden)="hiddenDescargarGestion()" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Actualizar</h4>
+                <button type="button" class="close pull-right" aria-label="Close" [disabled]="loading" (click)="modalDescargarGestion.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="control-label col-sm-12" >¿Está seguro de actualizar las gestiones?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="ball-clip-rotate" style="height:20px;float:left;" [ngClass]="{hidden : loading !== true }">
+                    <div></div>
+                </div>
+                <button [disabled]="loading"  (click)="actualizar($event, alertaSonido)!" class="btn btn-primary">SI</button>
+                <button [disabled]="loading"  (click)="modalDescargarGestion.hide()" class="btn btn-primary">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade " bsModal #modalDescargarMasivoGestion="bs-modal"  role="dialog" aria-labelledby="modalDescargarMasivoGestion" aria-hidden="true" (onHidden)="hiddenDescargarMasivoGestion()" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Descargar</h4>
+                <button type="button" class="close pull-right" aria-label="Close" [disabled]="loading" (click)="modalDescargarMasivoGestion.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="control-label col-sm-12" >¿Está seguro de descargar las gestiones?</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="ball-clip-rotate" style="height:20px;float:left;" [ngClass]="{hidden : loading !== true }">
+                    <div></div>
+                </div>
+                <button [disabled]="loading"  (click)="actualizarMasivo($event, alertaSonido)!" class="btn btn-primary">SI</button>
+                <button [disabled]="loading"  (click)="modalDescargarMasivoGestion.hide()" class="btn btn-primary">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" data-keyboard="false" bsModal #alertDocumentos="bs-modal"  role="dialog" aria-labelledby="alertDocumentos" aria-hidden="true" (onHidden)="hiddenalertDocumentos()" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-body">
+            	<div class="row">
+                    <div class="col-sm-12 text-center"><i class="icon icon-exclamation text-danger parpadea" style="font-size:6em;" title=""></i></div>
+                </div>
+                <div class="row" style="margin-top:15px;">
+                    <div class="col-sm-12 text-center" style="font-size:1.5em;"><p id="alertDocumentos_msj" class="text-danger"></p></div>
+                </div>
+    		</div>
+            <div class="modal-footer text-center">
+                <button [disabled]="loading"  (click)="Aceptar_alertDocumentos()" class="btn btn-primary">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>

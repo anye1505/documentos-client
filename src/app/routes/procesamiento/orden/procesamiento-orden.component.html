@@ -1,0 +1,316 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<!--<div class="content-heading">
+    Procesamiento
+    <small></small>
+</div>-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Ordenamiento</div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <form  [formGroup]="valFormSearch" (submit)="submitFormSearch($event, valFormSearch.value)"   class=" form-horizontal col-sm-12 ">
+                <div class="row">
+                    <div class="col-sm-3">                    
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Desde</label>
+                            <div class="col-sm-9">
+                                <input class="form-control input-sm" type="date" formControlName="desde" [formControl]="valFormSearch.controls['desde']" />
+                                <span class="text-danger" *ngIf="valFormSearch.controls['desde'].hasError('date') && (valFormSearch.controls['desde'].dirty || valFormSearch.controls['desde'].touched)">Enter a valid date</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">                    
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Hasta</label>
+                            <div class="col-sm-9">
+                                <input class="form-control input-sm" type="date" formControlName="hasta" [formControl]="valFormSearch.controls['hasta']" />
+                                <span class="text-danger" *ngIf="valFormSearch.controls['hasta'].hasError('date') && (valFormSearch.controls['hasta'].dirty || valFormSearch.controls['hasta'].touched)">Enter a valid date</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Estado</label>
+                            <div class="col-sm-9">                            
+                                <select class="form-control input-sm" formControlName="estado" [formControl]="valFormSearch.controls['estado']">
+                                    <option value="">SELECCIONAR</option>
+                                    <option *ngFor="let estado of estados" value="{{estado.ode_id}}">{{estado.ode_nombre}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">Tipo</label>
+                            <div class="col-sm-9">                            
+                                <select class="form-control input-sm" formControlName="tipo" [formControl]="valFormSearch.controls['tipo']">
+                                    <option value="">SELECCIONAR</option>                                    
+                                    <option *ngFor="let tipo of tipos" value="{{tipo.tip_id}}">{{tipo.tip_name}}</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3 col-sm-offset-9">
+                        <input [disabled]="loading" type="submit" class="btn btn-primary " style="float:right;" value="Buscar"/>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-sm-12">
+                <button class="btn btn-primary" (click)="modalCargarBase.show()"><i class="icon icon-list" ></i> Cargar base</button>
+                <button class="btn btn-warning" (click)="descargar(1)"  [disabled]="!btnDescargar "><i class="icon icon-cloud-download"></i> Descargar archivo ordenado</button>
+
+                <button class="btn btn-warning" (click)="reporte()"  [disabled]="!btnReporte "><i class="icon icon-cloud-download"></i> Reporte</button>
+
+            </div>
+        </div>
+        <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [limit]="limit" [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+                [externalSorting]="true" [loadingIndicator]="loading" 
+                [selected]="selected" [selectionType]="'single'" (activate)="onActivate($event)" (select)='onSelect($event)' [reorderable]="false"
+
+            >
+            <!--<ngx-datatable-column prop="ord_id" name="ID" [sortable]="false"></ngx-datatable-column>-->
+            <ngx-datatable-column prop="ord_id" [sortable]="false">
+
+                <ng-template let-column="column" ngx-datatable-header-template>
+                <input type="checkbox" (change)="allCheckbox($event)"  [(ngModel)]="chkList" #ctrl="ngModel" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                ID
+                </ng-template>
+
+                  <ng-template let-row="row" let-value="value" ngx-datatable-cell-template  let-group="group">
+                        
+                    <input type="checkbox"   class="chkTable"  (change)="onCheckboxChangeFn($event,row)" [checked]="checkedTotal"/>
+                     &nbsp;{{row.ord_id}}
+                  </ng-template> 
+
+            </ngx-datatable-column>
+
+
+            <ngx-datatable-column prop="pro_fecha_inicio_ord"  [sortable]="true">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Fecha Inicio
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                {{value | date: 'dd/MM/yyyy HH:mm'}}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column prop="pro_fecha_fin_ord"  [sortable]="true">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Fecha Fin
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                 {{value | date: 'dd/MM/yyyy HH:mm'}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="pro_nombre_archivo_in" name="Archivo"  [sortable]="false"></ngx-datatable-column>
+
+            <ngx-datatable-column prop="pro_tipo"  [sortable]="false">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Tipo
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                 {{value==1?'AUTOMATICO':'MANUAL'}}
+                </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column prop="ordenEstado.ode_nombre" name="Estado" [sortable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="configuracion.empresa.emp_abrev" name="Operador" [sortable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="pro_nro_con_ubigeo" name="Registro con Ubigeo" [sortable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="pro_nro_sin_ubigeo" name="Registro sin Ubigeo" [sortable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="pro_nro_docs" name="Total registros" [sortable]="false"></ngx-datatable-column>
+       
+          <ngx-datatable-footer>
+          <ng-template 
+            ngx-datatable-footer-template
+            let-rowCount="rowCount"
+            let-pageSize="pageSize"
+            let-selectedCount="selectedCount"
+            let-curPage="curPage"
+            let-offset="offset"
+            let-isVisible="isVisible">
+              <div class="page-count">
+                <span *ngIf="selectedMessage">
+                  {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+                </span>
+                <strong>{{rowCount.toLocaleString()}} Total</strong>
+
+                <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+                        <div></div>
+                </div>
+              </div>
+              <datatable-pager
+                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+                  [pagerRightArrowIcon]="'datatable-icon-right'"
+                  [pagerPreviousIcon]="'datatable-icon-prev'"
+                  [pagerNextIcon]="'datatable-icon-skip'"
+                  [page]="curPage"
+                  [size]="pageSize"
+                  [count]="rowCount"
+                  [hidden]="!((rowCount / pageSize) > 1)"
+                  (change)="table.onFooterPage($event)">
+              </datatable-pager>
+          </ng-template>
+        </ngx-datatable-footer>
+        </ngx-datatable>    
+    </div>
+</div>
+
+<!--<ng-template #modalCargarBase>-->
+
+<div class="modal fade " bsModal #modalCargarBase="bs-modal"  role="dialog" aria-labelledby="modalCargarBase" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Cargar Base</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="modalCargarBase.hide()"  [disabled]="formLoading">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">            
+                    <div class="col-sm-12">
+                        <div class="form-horizontal"> 
+                            <div class="form-group">
+                                <label class="control-label" class="col-sm-2">Operador</label>
+                                <div class="col-sm-10">
+                                    <ng-select
+                                            [items]="empresas"
+                                            [(ngModel)]="cliente" #ctrl="ngModel"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            bindLabel="emp_abrev"
+                                            bindValue="emp_id"
+                                            placeholder="Seleccionar cliente"
+                                        >
+                                        <ng-template ng-option-tmp let-item="item">
+                                            <div>{{item.emp_abrev}}</div>
+                                            <!--<small><b>Id:</b> {{item.id}} </small>-->
+                                        </ng-template>
+                                    </ng-select> 
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-12">
+                                    <label for="file2" class="file-upload">
+                                        <button class="btn btn-primary btn-block">Seleccionar Archivo</button>
+                                        <input id="file2" type="file" ng2FileSelect [uploader]="uploader" />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12" style="margin-bottom: 40px">
+                        <table class="table">
+                            <thead>
+                            <tr>                                
+                                <th width="50%">Nombre</th>
+                                <th>Tamaño</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr *ngFor="let item of uploader.queue">
+                                <td><strong>{{ item?.file?.name }}</strong></td>
+                                <td  nowrap>{{ item?.file?.size/1024/1024 | number:'.2' }} MB</td>
+                                
+                                <td class="text-center">
+                                    <span *ngIf="item.isSuccess"><i class="btn btn-xs btn-success icon icon-check"></i></span>
+                                    <span *ngIf="item.isCancel"><i class="btn btn-xs btn-warning icon icon-close"></i></span>
+                                    <span *ngIf="item.isError"><i class="btn btn-xs btn-danger icon icon-close"></i></span>
+                                </td>
+                                <td nowrap>
+                                    <button type="button" class="btn btn-success btn-xs"
+                                            (click)="item.upload()" [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                                        <span class="icon icon-cloud-upload"></span> Subir
+                                    </button>  
+                                    <!--<button type="button" class="btn btn-warning btn-xs"
+                                            (click)="cancelUpload(item,false)" [disabled]="!item.isUploading">
+                                        <span class="glyphicon glyphicon-ban-circle"></span> Cancelar
+                                    </button>-->
+                                     <button type="button" class="btn btn-danger btn-xs"
+                                            (click)="cancelUpload(item,true)">
+                                        <span class="icon icon-trash"></span> Cancelar
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+              
+                        <div>
+                            <div>
+                                
+                                <div class="progress" style="">
+                                    <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade " bsModal #modelReporte="bs-modal"  role="dialog" aria-labelledby="modelReporte" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Reporte</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="modelReporte.hide()"  [disabled]="formLoading">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="row">            
+                    <div class="col-sm-12">
+                        <div class="form-horizontal"> 
+                            <div class="form-group">
+                                <label class="control-label" class="col-sm-2">Operador</label>
+                                <div class="col-sm-10">
+                                    <ng-select
+                                            [items]="tipoReporteExtension"
+                                            [(ngModel)]="tipoReporte" #ctrl="ngModel"
+                                            [multiple]="false"
+                                            [closeOnSelect]="true"
+                                            bindLabel="value"
+                                            bindValue="value"
+                                            placeholder="Seleccionar tipo"
+                                        >
+                                    </ng-select> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">            
+                    <div class="col-sm-12">
+                        <ul>
+                            <li><label>Ordenes</label></li>
+                            <li *ngFor="let item of lista; let i = index">
+                                {{$index}} {{item.ord_id}}
+                              </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" (click)="generarReporte()">Generar</button>
+            </div>
+        </div>
+    </div>
+</div>

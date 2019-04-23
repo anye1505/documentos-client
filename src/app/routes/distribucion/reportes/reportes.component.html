@@ -1,0 +1,564 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Gestión de distribución</div>
+    </div>
+    <div class="panel-body">
+        <!--<div class="row">
+            <div class="card" role="tabpanel">
+                <ul class="nav nav-tabs nav-fill" role="tablist">
+                    <li class="nav-item" [ngClass]="{'active':panelBusqSeleccionado==0}" role="presentation">
+                        <a class="nav-link" [ngClass]="{'show':panelBusqSeleccionado==0}" href="javascript:void(0);" (click)="seleccionatab(0);" aria-controls="home" role="tab" data-toggle="tab" aria-selected="true">
+                            <em class="far fa-clock fa-fw"></em>B&uacute;squeda m&uacute;ltiple</a>
+                    </li>
+                </ul>
+                <div class="tab-content p-0">
+                    <div class="tab-pane" [ngClass]="{'active show':panelBusqSeleccionado==0}" role="tabpanel">-->
+                        <div class="row">
+                            <form [formGroup]="valfrmbusqmultiple" (submit)="frmBusquedaMultiple_submit($event, valfrmbusqmultiple.value)"   class=" form-horizontal col-sm-12 ">
+                                <div class="row">
+                                    <div class="col-sm-4">                    
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Fecha ruta desde</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control input-sm" type="date" formControlName="Inicio" [formControl]="valfrmbusqmultiple.controls['Inicio']" />
+                                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Inicio'].hasError('date') && (valfrmbusqmultiple.controls['Inicio'].dirty || valfrmbusqmultiple.controls['Inicio'].touched)">Ingrese una fecha valida</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">                    
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">hasta</label>
+                                            <div class="col-sm-10">
+                                                <input class="form-control input-sm" type="date" formControlName="Fin" [formControl]="valfrmbusqmultiple.controls['Fin']" />
+                                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Fin'].hasError('date') && (valfrmbusqmultiple.controls['Fin'].dirty || valfrmbusqmultiple.controls['Fin'].touched)">Ingrese una fecha valida</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Operador</label>
+                                            <div class="col-sm-10">
+                                                <ng-select
+                                                    [items]="listoperadores" 
+                                                    formControlName="Operador" 
+                                                    [formControl]="valfrmbusqmultiple.controls['Operador']" 
+                                                    [multiple]="false"
+                                                    [closeOnSelect]="true"
+                                                    bindLabel="emp_abrev"
+                                                    bindValue="emp_id"
+                                                    placeholder="Seleccionar"
+                                                    (change)="searchCliente($event)"
+                                                >
+                                                    <ng-template ng-option-tmp let-item="item">
+                                                        <div>{{item.emp_abrev}}</div>
+                                                    </ng-template>
+                                                </ng-select>
+                                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Operador'].hasError('required') && (valfrmbusqmultiple.controls['Operador'].dirty || valfrmbusqmultiple.controls['Operador'].touched)">Operador es obligatorio</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Cliente</label>
+                                            <div class="col-sm-10">                            
+                                                <ng-select
+                                                    [items]="listclientes" 
+                                                    formControlName="Cliente"
+                                                    [formControl]="valfrmbusqmultiple.controls['Cliente']" 
+                                                    [multiple]="false"
+                                                    [closeOnSelect]="true"
+                                                    bindLabel="emp_abrev"
+                                                    bindValue="cli_id"
+                                                    placeholder="Seleccionar"
+                                                    (change)="searchProducto($event)"
+                                                >
+                                                    <ng-template ng-option-tmp let-item="item">
+                                                        <div>{{item.emp_abrev}}</div>
+                                                    </ng-template>
+                                                </ng-select>
+                                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Cliente'].hasError('required') && (valfrmbusqmultiple.controls['Cliente'].dirty || valfrmbusqmultiple.controls['Cliente'].touched)">Cliente es obligatorio</span>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Producto</label>
+                                            <div class="col-sm-10">                            
+                                                <ng-select
+                                                    [items]="listproductos" 
+                                                    formControlName="Producto" 
+                                                    [formControl]="valfrmbusqmultiple.controls['Producto']" 
+                                                    [multiple]="true"
+                                                    [closeOnSelect]="true"
+                                                    bindLabel="prd_nombre_docs"
+                                                    bindValue="prd_id"
+                                                    placeholder="Seleccionar"
+                                                >
+                                                    <ng-template ng-option-tmp let-item="item">
+                                                        <div>{{item.prd_nombre_docs}}</div>
+                                                    </ng-template>
+                                                </ng-select>
+                                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Producto'].hasError('required') && (valfrmbusqmultiple.controls['Producto'].dirty || valfrmbusqmultiple.controls['Producto'].touched)">Producto es obligatorio</span>
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                                <div class="row"><!--
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Courier</label>
+                                            <div class="col-sm-10">                            
+                                                <ng-select
+                                                    [items]="listcouriers" 
+                                                    formControlName="Courier" 
+                                                    [formControl]="valfrmbusqmultiple.controls['Courier']" 
+                                                    [multiple]="false"
+                                                    [closeOnSelect]="true"
+                                                    bindLabel="nombre_courier"
+                                                    bindValue="id_courier"
+                                                    placeholder="Seleccionar"
+                                                    (change)="searchSucursal($event)"
+                                                >
+                                                    <ng-template ng-option-tmp let-item="item">
+                                                        <div>{{item.nombre_courier}}</div>
+                                                    </ng-template>
+                                                </ng-select>
+                                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Courier'].hasError('required') && (valfrmbusqmultiple.controls['Courier'].dirty || valfrmbusqmultiple.controls['Courier'].touched)">Courier es obligatorio</span>
+                                            </div>                           
+                                                        
+                                        </div>
+                                    </div>-->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">Sucursal</label>
+                                            <div class="col-sm-10">                            
+                                                <ng-select
+                                                    [items]="listsucursales" 
+                                                    formControlName="Sucursal" 
+                                                    [formControl]="valfrmbusqmultiple.controls['Sucursal']" 
+                                                    [multiple]="false"
+                                                    [closeOnSelect]="true"
+                                                    bindLabel="suc_nombre"
+                                                    bindValue="suc_id"
+                                                    placeholder="Seleccionar"
+                                                    (change)="searchMensajero($event)"
+                                                >
+                                                    <ng-template ng-option-tmp let-item="item">
+                                                        <div>{{item.suc_nombre}}</div>
+                                                    </ng-template>
+                                                </ng-select>
+                                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Sucursal'].hasError('required') && (valfrmbusqmultiple.controls['Sucursal'].dirty || valfrmbusqmultiple.controls['Sucursal'].touched)">Sucursal es obligatorio</span>
+                                            </div>                           
+                                                        
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">Mensajero</label>
+                                            <div class="col-sm-9">                            
+                                                <ng-select
+                                                    [items]="listmensajeros" 
+                                                    formControlName="Mensajero" 
+                                                    [formControl]="valfrmbusqmultiple.controls['Mensajero']" 
+                                                    [multiple]="true"
+                                                    [closeOnSelect]="true"
+                                                    bindLabel="men_nombre"
+                                                    bindValue="men_id"
+                                                    placeholder="Seleccionar"
+                                                >
+                                                    <ng-template ng-option-tmp let-item="item">
+                                                        <div>{{item.men_nombre}}</div>
+                                                    </ng-template>
+                                                </ng-select>
+                                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Mensajero'].hasError('required') && (valfrmbusqmultiple.controls['Mensajero'].dirty || valfrmbusqmultiple.controls['Mensajero'].touched)">Mensajero es obligatorio</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">                                
+                                    <div class="col-sm-offset-6 col-sm-6 text-right">
+                                        <input [disabled]="loading" type="submit" class="btn btn-primary " style="float:right;" value="Buscar"/>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">                                
+                                    <div class="col-sm-offset-6 col-sm-6 text-right">
+                                        <button [disabled]="loading || loading1" type="button" class="btn btn-primary" (click)="btnExportar_click($event)">Exportar Excel</button>
+                                        <button [disabled]="loading || loading2" type="button" class="btn btn-primary" (click)="btnExportarDetallado_click($event)">Exportar Excel Detallado</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    <!--</div>
+                </div>
+            </div>
+        </div>  -->
+        <div class="row" style="margin-top:15px;">
+            <div class="col-sm-12">
+                <ngx-datatable #table class='material expandable bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" 
+                 [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+                [externalSorting]="true" [loadingIndicator]="loading" [selected]="selected" [selectionType]="'single'"
+                (activate)="onActivate($event)" (select)='onSelect($event)' [reorderable]="false">
+                    <!--Detalle
+                    <ngx-datatable-row-detail [rowHeight]="100" #myDetailRow (toggle)="onDetailToggle($event)">
+                        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-row-detail-template>
+                            <div >                                
+                                <ngx-datatable #myDaughter [headerHeight]="0" [columns]="columns" [columnMode]="'force'" [rows]="row.detalle"
+                                    [rowHeight]="auto" [externalPaging]="false" [count]="row.detalle.length" [reorderable]="false">
+                                    <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+                                        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                                            <a
+                                            href="#">
+                                            </a>
+                                        </ng-template>
+                                    </ngx-datatable-column>
+                                    <ngx-datatable-column name="" [sortable]="false" ></ngx-datatable-column>
+                                    <ngx-datatable-column prop="gui_fecha_entrega" name="" [sortable]="false" ></ngx-datatable-column>
+                                    <ngx-datatable-column prop="documentos_por_cerrar" name="" [sortable]="false" ></ngx-datatable-column>
+                                    <ngx-datatable-column prop="documentos_imagen" name="" [sortable]="false" ></ngx-datatable-column>
+                                    <ngx-datatable-column prop="documentos_entregados_al_mensajero" name="" [sortable]="false" ></ngx-datatable-column>
+                                    <ngx-datatable-column prop="documentos_cerrados_por_el_mensajero" name="" [sortable]="false" ></ngx-datatable-column>
+                                </ngx-datatable>
+                            </div>
+                    </ng-template>
+                    </ngx-datatable-row-detail>
+
+                    <ngx-datatable-column [width]="50" [resizeable]="false" [sortable]="false" [draggable]="false" [canAutoResize]="false">
+                        <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                            <a
+                            href="#"
+                            [class.datatable-icon-right]="!expanded"
+                            [class.datatable-icon-down]="expanded"
+                            title="Detalle"
+                            (click)="toggleExpandRow(row)">
+                            </a>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="men_id" name="Id" [sortable]="false" ></ngx-datatable-column>-->
+                    <ngx-datatable-column prop="men_nombre" name="Nombre Mensajero" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="guia" name="Guía" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="fecha_ruta" name="Fecha ruta" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="fecha_cierre_prog" name="Fecha cierre" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="dias_atraso" name="Días atraso" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="entregas" name="Entregas" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="con_imagen" name="Con imagen" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="sin_imagen" name="Sin imagen" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="rezagos" name="Rezagos" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column *ngIf="!seleccionado" prop="pendiente" name="Pendiente" [sortable]="false" >
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <a
+                            href="#"
+                            (click)="pendientes(row)">{{value}}
+                            </a>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column *ngIf="seleccionado" prop="pendiente" name="Pendiente" [sortable]="false" >
+                        <ng-template *ngIf="seleccionado" let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <a
+                            href="#"
+                            style="color:#656565 !important;text-decoration:underline"
+                            (click)="pendientes(row)">{{value}}
+                            </a>
+                        </ng-template>
+
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="total" name="Total" [sortable]="false" ></ngx-datatable-column>
+                    
+                    <!--<ngx-datatable-column name="Actions" sortable="false" prop="ord_id">
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <button class="btn btn-xs bg-primary-dark" (click)="editar(row)" tooltip="Editar guía" placement="top" style="margin-left:24px;"><i class="fa fa-edit (alias)"></i></button>
+                            <button class="btn btn-purple btn-xs" (click)="imprimir(row)" tooltip="Imprimir guía"><i class="fa fa-print"></i></button>
+                        </ng-template> 
+                  </ngx-datatable-column>-->
+
+                  <ngx-datatable-footer>
+                        <ng-template 
+                          ngx-datatable-footer-template
+                          let-rowCount="rowCount"
+                          let-pageSize="pageSize"
+                          let-selectedCount="selectedCount"
+                          let-curPage="curPage"
+                          let-offset="offset"
+                          let-isVisible="isVisible">
+                            <div class="page-count">
+                              <span *ngIf="selectedMessage">
+                                {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+                              </span>
+                              <strong>{{rowCount.toLocaleString()}} Total</strong>
+          
+                              <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+                                      <div></div>
+                              </div>
+                            </div>
+                            <datatable-pager
+                                [pagerLeftArrowIcon]="'datatable-icon-left'"
+                                [pagerRightArrowIcon]="'datatable-icon-right'"
+                                [pagerPreviousIcon]="'datatable-icon-prev'"
+                                [pagerNextIcon]="'datatable-icon-skip'"
+                                [page]="curPage"
+                                [size]="pageSize"
+                                [count]="rowCount"
+                                [hidden]="!((rowCount / pageSize) > 1)"
+                                (change)="table.onFooterPage($event)">
+                            </datatable-pager>
+                        </ng-template>
+                      </ngx-datatable-footer>
+                </ngx-datatable>   
+            </div>
+        </div>  
+        <!--<div class="row" style="margin-top:15px;">                                
+            <div class="col-sm-6 text-left">
+                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="btnNuevo_click($event)">Nuevo</button>
+            </div>                                
+            <div class="col-sm-6 text-right">
+                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="btnExportarDetallado_click($event)">Exportar Excel Detallado</button>
+                <button [disabled]="loading" type="button" class="btn btn-primary" (click)="btnExportar_click($event)">Exportar Excel</button>
+            </div>
+        </div>-->
+    </div>
+</div>
+<!--
+<div class="modal fade" data-keyboard="false" bsModal #ppBsqGuiaxCodigo="bs-modal"  role="dialog" aria-labelledby="ppBsqGuiaxCodigo" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Buscar Gu&iacute;a por c&oacute;digo de barra</h4>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="ppBsqGuiaxCodigo.hide()"  [disabled]="formLoading"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">            
+                    <div class="col-sm-12">
+                        <div class="form"> 
+                            <div class="form-group">
+                                <label class="control-label" class="col-sm-12" style="text-align:center;">Obtener N° Gu&iacute;a por el C&oacute;digo de Barras</label>
+                                <div class="col-sm-offset-3 col-sm-6">
+                                    <input class="form-control input-sm" type="text" id="txtCodigoBarra" (change)="btnPpAceptar_click($event, true)" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" (click)="btnPpAceptar_click($event, false)" [disabled]="loading" >Buscar Gu&iacute;a</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="ImpGuia" style="display:none;">
+    <div  class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal" style="margin-bottom:0px;">
+                <div class="row">
+                    <div class="col-sm-12" style="margin-bottom:15px;">
+                        <div class="table-responsive">
+                            <table style="font-size:12px;">
+                                <tbody>
+                                    <tr>
+                                        <td><label class="control-label" style="padding-top:3px;">N° gu&iacute;a</label></td>
+                                        <td><p id="impNroGuia" class="form-control-static" style="padding-bottom:3px;padding-top:3px;min-height:21px;"></p></td>
+                                        <td><label class="control-label" style="padding-top:3px;">Estado</label></td>
+                                        <td><p id="impEstado" class="form-control-static" style="padding-bottom:3px;padding-top:3px;min-height:21px;"></p></td>
+                                        <td style="width:25%;" rowspan="3">
+                                            <p id="impCurrier" class="form-control-static text-center" style="padding-bottom:3px;padding-top:3px;min-height:21px;"></p>
+                                            <p id="impSucursal" class="form-control-static text-center" style="padding-bottom:3px;padding-top:3px;min-height:21px;"></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label" style="padding-top:3px;">Pasaje S/.</label></td>
+                                        <td><p id="impPasaje" class="form-control-static" style="padding-bottom:3px;padding-top:3px;min-height:21px;"></p></td>
+                                        <td><label class="control-label" style="padding-top:3px;">Mensajero</label></td>
+                                        <td><p id="impMensajero" class="form-control-static" style="padding-bottom:3px;padding-top:3px;min-height:21px;"></p></td>
+                                    </tr>
+                                    <tr>
+                                        <td><label class="control-label" style="padding-top:3px;">Despachador</label></td>
+                                        <td><p id="impDespachador" class="form-control-static" style="padding-bottom:3px;padding-top:3px;min-height:21px;"></p></td>
+                                        <td><label class="control-label" style="padding-top:3px;">Distrito</label></td>
+                                        <td><p id="impDistrito" class="form-control-static" style="padding-bottom:3px;padding-top:3px;min-height:21px;"></p></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table-responsive" >
+                            <table class="table table-bordered table-condensed" style="font-size:12px;margin-bottom:0px;">
+                                <thead>
+                                    <tr>
+                                        <th>Operador</th>
+                                        <th>Cliente</th>
+                                        <th>Producto</th>
+                                        <th>OS-Operador</th>
+                                        <th>OS-Documentos</th>
+                                        <th>Fecha cierre</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let detalle of listImpdetalle; let i = index">
+                                        <td>{{detalle.operador}}</td>
+                                        <td>{{detalle.cliente}}</td>
+                                        <td>{{detalle.producto}}</td>
+                                        <td>{{detalle.nro_orden_operador}}</td>
+                                        <td>{{detalle.nro_orden_documentos}}</td>
+                                        <td>{{detalle.fecha_fin}}</td>
+                                        <td>{{detalle.nro_documentos}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div  class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal" style="margin-bottom:0px;">
+                <div class="row">
+                    <div class="col-sm-12"><h5>Documentos pendientes al {{impFechaHora}}</h5></div>
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed" style="font-size:12px;margin-bottom:0px;">
+                                <thead>
+                                    <tr>
+                                        <th>Operador</th>
+                                        <th>Cliente</th>
+                                        <th>Producto</th>
+                                        <th>OS-Operador</th>
+                                        <th>OS-Documentos</th>
+                                        <th>Fecha cierre</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let pendiente of listImpPendientes; let i = index">
+                                        <td>{{pendiente.operador}}</td>
+                                        <td>{{pendiente.cliente}}</td>
+                                        <td>{{pendiente.producto}}</td>
+                                        <td>{{pendiente.nro_orden_operador}}</td>
+                                        <td>{{pendiente.nro_orden_documentos}}</td>
+                                        <td>{{pendiente.fecha_fin}}</td>
+                                        <td>{{pendiente.nro_documentos}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div  class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal" style="margin-bottom:0px;">
+                <div class="row">
+                    <div class="col-sm-12"><h5>Documentos con gestión no permitida al {{impFechaHora}}</h5></div>
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-condensed" style="font-size:12px;margin-bottom:0px;">
+                                <thead>
+                                    <tr>
+                                        <th>Operador</th>
+                                        <th>Cliente</th>
+                                        <th>Producto</th>
+                                        <th>OS-Operador</th>
+                                        <th>OS-Documentos</th>
+                                        <th>Fecha cierre</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody >
+                                    <tr *ngFor="let nopermitida of listImpNoPermitida; let i = index">
+                                        <td>{{nopermitida.operador}}</td>
+                                        <td>{{nopermitida.cliente}}</td>
+                                        <td>{{nopermitida.producto}}</td>
+                                        <td>{{nopermitida.nro_orden_operador}}</td>
+                                        <td>{{nopermitida.nro_orden_documentos}}</td>
+                                        <td>{{nopermitida.fecha_fin}}</td>
+                                        <td>{{nopermitida.nro_documentos}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div  class="panel panel-default">
+        <div class="panel-body">
+            <form class="form-horizontal">
+                <div class="row">
+                    <label class="col-sm-2 control-label" style="padding-top:0px;text-align:left;min-height:50px;">Observaciones</label>
+                </div>
+            </form>
+        </div>
+    </div>
+    <form class="form-horizontal">
+        <div class="row">
+            <label class="col-sm-3 control-label" style="margin:50px 15px 0px 30px;text-align:center;border-top:1px solid black;padding-left:0px;padding-right:0px;">Firma Despachador(a)</label>
+            <label class="col-sm-3 control-label" style="margin:50px 15px 0px 15px;text-align:center;border-top:1px solid black;padding-left:0px;padding-right:0px;">Firma Mensajero(a)</label>
+        </div>
+    </form>
+</div>-->
+
+<div style="overflow-y: scroll;" class="modal fade" bsModal #pendientesModal="bs-modal"  role="dialog" aria-labelledby="pendientesModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog" style="width: 1050px !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 *ngIf="pendienterow" class="pull-left">Guía: {{pendienterow.guia}}</h5>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="pendientesModal.hide()"  [disabled]="loading"><span aria-hidden="true">&times;</span></button>
+                <br><br>
+                <h5 *ngIf="pendienterow" class="pull-left">Mensajero: {{pendienterow.men_nombre}}</h5>
+                <br><br>
+                <h5 *ngIf="pendienterow" class="pull-left">Fecha ruta: {{pendienterow.fecha_ruta}}</h5>
+            </div>
+            <div style="overflow-y: auto !important; max-height: 500px !important;" class="modal-body">
+                <div style="padding-top: 15px">
+                    <a class="pull-rigth" (click)="selectElementContents()" tooltip="Copiar"><span style="color:darkgray;"><em class="pull-rigth fa fa-clone"></em></span></a>
+                </div>
+                
+                <div *ngIf="loading" class="ball-clip-rotate pull-right">
+                    <div></div>
+                </div>
+                <div class="table-responsive">
+                    <table id="tabletocopy" class="table2 table-striped headbordered ">
+                        <thead>
+                        <tr class="headbordered">
+                            <th class="text-center" style="width:100px">Código barra</th>
+                            <th class="text-center" style="width:100px">Distrito</th>
+                            <th class="text-center" style="width:100px">Dirección</th>
+                            <th class="text-center" style="width:100px">Tiene imagen</th>
+                            <th class="text-center" style="width:100px">Operador</th>
+                            <th class="text-center" style="width:100px">Cliente</th>
+                            <th class="text-center" style="width:100px">Producto</th>
+                            <th class="text-center" style="width:100px">OS</th>
+                            <th class="text-center" style="width:100px">Fecha proceso</th>
+                        </tr>
+                        </thead>
+                        <tbody >
+                        <tr *ngFor="let item of rows2">
+                            <td class="text-center"><strong>{{ item?.codigo_barra }}</strong></td>
+                            <td class="text-center" nowrap>{{ item?.destino }}</td>
+                            <td class="text-center" nowrap>{{ item?.direccion }}</td>
+                            <td class="text-center" nowrap>{{ item?.tiene_imagen }}</td>
+                            <td class="text-center" nowrap>{{ item?.operador }}</td>
+                            <td class="text-center" nowrap>{{ item?.cliente }}</td>
+                            <td class="text-center" nowrap>{{ item?.producto }}</td>
+                            <td class="text-center" nowrap>{{ item?.os }}</td>
+                            <td class="text-center" nowrap>{{ item?.fecha_proceso }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

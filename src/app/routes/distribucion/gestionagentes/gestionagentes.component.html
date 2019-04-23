@@ -1,0 +1,286 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Gestión de agentes</div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <form [formGroup]="valfrmbusqmultiple" (submit)="frmBusquedaMultiple_submit($event, valfrmbusqmultiple.value)"   class=" form-horizontal col-sm-12 ">
+                <div class="row">
+                    <div class="col-sm-4">                    
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Fecha despacho desde</label>
+                            <div class="col-sm-10">
+                                <input class="form-control input-sm" type="date" formControlName="Inicio" [formControl]="valfrmbusqmultiple.controls['Inicio']" />
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Inicio'].hasError('date') && (valfrmbusqmultiple.controls['Inicio'].dirty || valfrmbusqmultiple.controls['Inicio'].touched)">Ingrese una fecha valida</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">                    
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">hasta</label>
+                            <div class="col-sm-10">
+                                <input class="form-control input-sm" type="date" formControlName="Fin" [formControl]="valfrmbusqmultiple.controls['Fin']" />
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Fin'].hasError('date') && (valfrmbusqmultiple.controls['Fin'].dirty || valfrmbusqmultiple.controls['Fin'].touched)">Ingrese una fecha valida</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Operador</label>
+                            <div class="col-sm-10">
+                                <ng-select
+                                    [items]="listoperadores" 
+                                    formControlName="Operador" 
+                                    [formControl]="valfrmbusqmultiple.controls['Operador']" 
+                                    [multiple]="false"
+                                    [closeOnSelect]="true"
+                                    bindLabel="emp_abrev"
+                                    bindValue="emp_id"
+                                    placeholder="Seleccionar"
+                                    (change)="searchCliente($event)"
+                                >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.emp_abrev}}</div>
+                                    </ng-template>
+                                </ng-select>
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Operador'].hasError('required') && (valfrmbusqmultiple.controls['Operador'].dirty || valfrmbusqmultiple.controls['Operador'].touched)">Operador es obligatorio</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Cliente</label>
+                            <div class="col-sm-10">                            
+                                <ng-select
+                                    [items]="listclientes" 
+                                    formControlName="Cliente"
+                                    [formControl]="valfrmbusqmultiple.controls['Cliente']" 
+                                    [multiple]="false"
+                                    [closeOnSelect]="true"
+                                    bindLabel="emp_abrev"
+                                    bindValue="cli_id"
+                                    placeholder="Seleccionar"
+                                    (change)="searchProducto($event)"
+                                >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.emp_abrev}}</div>
+                                    </ng-template>
+                                </ng-select>
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Cliente'].hasError('required') && (valfrmbusqmultiple.controls['Cliente'].dirty || valfrmbusqmultiple.controls['Cliente'].touched)">Cliente es obligatorio</span>
+                            </div>
+                        </div>
+                    </div>  
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Producto</label>
+                            <div class="col-sm-10">                            
+                                <ng-select
+                                    [items]="listproductos" 
+                                    formControlName="Producto" 
+                                    [formControl]="valfrmbusqmultiple.controls['Producto']" 
+                                    [multiple]="true"
+                                    [closeOnSelect]="true"
+                                    bindLabel="prd_nombre_docs"
+                                    bindValue="prd_id"
+                                    placeholder="Seleccionar"
+                                >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.prd_nombre_docs}}</div>
+                                    </ng-template>
+                                </ng-select>
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Producto'].hasError('required') && (valfrmbusqmultiple.controls['Producto'].dirty || valfrmbusqmultiple.controls['Producto'].touched)">Producto es obligatorio</span>
+                            </div>
+                        </div>
+                    </div>                                    
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Courier</label>
+                            <div class="col-sm-10">                            
+                                <ng-select
+                                    [items]="listcouriers" 
+                                    formControlName="Courier" 
+                                    [formControl]="valfrmbusqmultiple.controls['Courier']" 
+                                    [multiple]="false"
+                                    [closeOnSelect]="true"
+                                    bindLabel="nombre_courier"
+                                    bindValue="id_courier"
+                                    placeholder="Seleccionar"
+                                    (change)="searchSucursal($event)"
+                                >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.nombre_courier}}</div>
+                                    </ng-template>
+                                </ng-select>
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Courier'].hasError('required') && (valfrmbusqmultiple.controls['Courier'].dirty || valfrmbusqmultiple.controls['Courier'].touched)">Courier es obligatorio</span>
+                            </div>                           
+                                        
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Sucursal</label>
+                            <div class="col-sm-10">                            
+                                <ng-select
+                                    [items]="listsucursales" 
+                                    formControlName="Sucursal" 
+                                    [formControl]="valfrmbusqmultiple.controls['Sucursal']" 
+                                    [multiple]="false"
+                                    [closeOnSelect]="true"
+                                    bindLabel="suc_nombre"
+                                    bindValue="suc_id"
+                                    placeholder="Seleccionar"
+                                >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.suc_nombre}}</div>
+                                    </ng-template>
+                                </ng-select>
+                                <span class="text-danger" *ngIf="valfrmbusqmultiple.controls['Sucursal'].hasError('required') && (valfrmbusqmultiple.controls['Sucursal'].dirty || valfrmbusqmultiple.controls['Sucursal'].touched)">Sucursal es obligatorio</span>
+                            </div>                           
+                                        
+                        </div>
+                    </div>
+                </div>
+                <div class="row">                                
+                    <div class="col-sm-offset-6 col-sm-6 text-right">
+                        <input [disabled]="loading" type="submit" class="btn btn-primary " style="float:right;" value="Buscar"/>
+                    </div>
+                </div>
+                <br>
+                <div class="row">                                
+                    <div class="col-sm-offset-6 col-sm-6 text-right">
+                        <button [disabled]="loading" type="button" class="btn btn-primary" (click)="btnExportar_click($event)">Exportar Excel</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="row" style="margin-top:15px;">
+            <div class="col-sm-12">
+                <ngx-datatable #table class='material expandable bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" 
+                 [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+                [externalSorting]="true" [loadingIndicator]="loading" [selected]="selected" [selectionType]="'single'"
+                (activate)="onActivate($event)" (select)='onSelect($event)' [reorderable]="false">
+                    
+                    <ngx-datatable-column prop="courier" name="Courier" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="sucursal" name="Sucursal" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="guia_despacho" name="Guía despacho" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="fecha_despacho" name="Fecha despacho" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="fecha_cierre_prog" name="Fecha cierre" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="dias_atraso" name="Días atraso" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="entregas" name="Entregas" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="con_imagen" name="Con imagen" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="sin_imagen" name="Sin imagen" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column prop="rezagos" name="Rezagos" [sortable]="false" ></ngx-datatable-column>
+                    <ngx-datatable-column *ngIf="!seleccionado" prop="pendiente" name="Pendiente" [sortable]="false" >
+                        <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <a
+                            href="#"
+                            (click)="pendientes(row)">{{value}}
+                            </a>
+                        </ng-template>
+                    </ngx-datatable-column>
+                    <ngx-datatable-column *ngIf="seleccionado" prop="pendiente" name="Pendiente" [sortable]="false" >
+                        <ng-template *ngIf="seleccionado" let-row="row" let-value="value" ngx-datatable-cell-template>
+                            <a
+                            href="#"
+                            style="color:#656565 !important;text-decoration:underline"
+                            (click)="pendientes(row)">{{value}}
+                            </a>
+                        </ng-template>
+
+                    </ngx-datatable-column>
+                    <ngx-datatable-column prop="total" name="Total" [sortable]="false" ></ngx-datatable-column>
+
+                  <ngx-datatable-footer>
+                        <ng-template 
+                          ngx-datatable-footer-template
+                          let-rowCount="rowCount"
+                          let-pageSize="pageSize"
+                          let-selectedCount="selectedCount"
+                          let-curPage="curPage"
+                          let-offset="offset"
+                          let-isVisible="isVisible">
+                            <div class="page-count">
+                              <span *ngIf="selectedMessage">
+                                {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+                              </span>
+                              <strong>{{rowCount.toLocaleString()}} Total</strong>
+          
+                              <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+                                      <div></div>
+                              </div>
+                            </div>
+                            <datatable-pager
+                                [pagerLeftArrowIcon]="'datatable-icon-left'"
+                                [pagerRightArrowIcon]="'datatable-icon-right'"
+                                [pagerPreviousIcon]="'datatable-icon-prev'"
+                                [pagerNextIcon]="'datatable-icon-skip'"
+                                [page]="curPage"
+                                [size]="pageSize"
+                                [count]="rowCount"
+                                [hidden]="!((rowCount / pageSize) > 1)"
+                                (change)="table.onFooterPage($event)">
+                            </datatable-pager>
+                        </ng-template>
+                      </ngx-datatable-footer>
+                </ngx-datatable>   
+            </div>
+        </div>
+    </div>
+</div>
+
+<div style="overflow-y: scroll;" class="modal fade" bsModal #pendientesModal="bs-modal"  role="dialog" aria-labelledby="pendientesModal" aria-hidden="true" [config]="{backdrop: 'static'}">
+    <div class="modal-dialog" style="width: 1150px !important;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 *ngIf="pendienterow" class="pull-left">Guía despacho: {{pendienterow.guia_despacho}}</h5>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="pendientesModal.hide()"  [disabled]="loading"><span aria-hidden="true">&times;</span></button>
+                <br><br>
+                <h5 *ngIf="pendienterow" class="pull-left">Courier: {{pendienterow.courier}} - {{pendienterow.sucursal}}</h5>
+                <br><br>
+                <h5 *ngIf="pendienterow" class="pull-left">Fecha despacho: {{pendienterow.fecha_despacho}}</h5>
+            </div>
+            <div style="overflow-y: auto !important; max-height: 500px !important;" class="modal-body">
+                <a class="pull-rigth" (click)="selectElementContents()" tooltip="Copiar"><span style="color:darkgray; padding-top: 15px"><em class="pull-rigth fa fa-clone"></em></span></a>
+                <div *ngIf="loading" class="ball-clip-rotate pull-right">
+                    <div></div>
+                </div>
+                <div class="table-responsive">
+                    <table id="tabletocopy" class="table2 table-striped headbordered ">
+                        <thead>
+                        <tr>
+                            <th class="text-center">Código barra</th>
+                            <th class="text-center">Distrito</th>
+                            <th class="text-center">Dirección</th>
+                            <th class="text-center">Tiene imagen</th>
+                            <th class="text-center">Operador</th>
+                            <th class="text-center">Cliente</th>
+                            <th class="text-center">Producto</th>
+                            <th class="text-center">OS</th>
+                            <th class="text-center">Fecha proceso</th>
+                        </tr>
+                        </thead>
+                        <tbody >
+                        <tr *ngFor="let item of rows2">
+                            <td class="text-center"><strong>{{ item?.codigo_barra }}</strong></td>
+                            <td class="text-center" nowrap>{{ item?.destino }}</td>
+                            <td class="text-center" nowrap>{{ item?.direccion }}</td>
+                            <td class="text-center" nowrap>{{ item?.tiene_imagen }}</td>
+                            <td class="text-center" nowrap>{{ item?.operador }}</td>
+                            <td class="text-center" nowrap>{{ item?.cliente }}</td>
+                            <td class="text-center" nowrap>{{ item?.producto }}</td>
+                            <td class="text-center" nowrap>{{ item?.os }}</td>
+                            <td class="text-center" nowrap>{{ item?.fecha_proceso }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,461 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<!--<div class="content-heading">
+    Mi configuración
+    <small></small>
+</div>-->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="panel-title">Regla distribución</div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+
+            <form  [formGroup]="valFormSearch" (submit)="submitFormSearch($event, valFormSearch.value)"   class=" form-horizontal col-sm-12 ">
+                <div class="row">
+                    <div class="col-sm-12">   
+                    	<div class="form-group">
+	                    	<label class="control-label col-sm-2" >Nombre</label>
+	                        <div class="col-sm-8">
+	                            <input type="text"   [formControl]=" valFormSearch.controls['rdi_nombre']"  class="form-control input-sm "/>
+	                            <!--
+	                            <span class="text-danger" *ngIf="valFormRegistrarRegla.controls['rdi_nombre'].hasError('required') && (valFormRegistrarRegla.controls['rdi_nombre'].dirty || valFormRegistrarRegla.controls['rdi_nombre'].touched)">Dato es obligatorio</span>
+	                        -->
+	                        </div>
+	                    </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3 col-sm-offset-9">
+                        <input [disabled]="loading" type="submit" class="btn btn-primary " style="float:right;" value="Buscar"/>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+        <hr />
+        <ngx-datatable #table class='bootstrap no-detail-row' [columns]="columns" [columnMode]="'force'" [footerHeight]="50" [rowHeight]="'auto'" [limit]="limit" [rows]='rows' (page)="onPage($event)" (sort)="onSort($event)"  [externalPaging]="true" [count]="count"  
+                [externalSorting]="true" [loadingIndicator]="loading" 
+                [selected]="selected" [selectionType]="'single'" (activate)="onActivate($event)" (select)='onSelect($event)' [reorderable]="false"
+
+            >
+
+            <ngx-datatable-column prop="rdi_id" name="ID" [sortable]="false"></ngx-datatable-column>
+            <ngx-datatable-column prop="rdi_nombre"  [sortable]="true">
+                <ng-template let-column="column" ngx-datatable-header-template>
+                Nombre
+                </ng-template>
+                <ng-template let-value="value" ngx-datatable-cell-template>
+                {{value }}
+                </ng-template>
+            </ngx-datatable-column>
+
+             <ngx-datatable-column name="Acciones" sortable="false" prop="id">
+				      <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+
+				            <button class="btn btn-xs bg-primary-dark" (click)="showEditarModal(row)" tooltip="Editar regla" placement="top">
+			              		<i class="fa fa-edit (alias)"></i>
+				            </button>
+
+				            <button class="btn btn-xs bg-danger-dark" (click)="showEliminarModal(row)" tooltip="Eliminar regla" placement="top">
+			              		<i class="fa fa-trash"></i>
+				            </button>
+
+				      </ng-template>
+				</ngx-datatable-column>
+       
+          <ngx-datatable-footer>
+	          <ng-template 
+	            ngx-datatable-footer-template
+	            let-rowCount="rowCount"
+	            let-pageSize="pageSize"
+	            let-selectedCount="selectedCount"
+	            let-curPage="curPage"
+	            let-offset="offset"
+	            let-isVisible="isVisible">
+	              <div class="page-count">
+	                <button [disabled]="loading" class="btn btn-primary btn-xs" (click)="showCrearModal();"  tooltip="Agregar regla" placement="top"><i class="icon icon-plus"></i></button>
+	                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	                <span *ngIf="selectedMessage">
+	                  {{selectedCount.toLocaleString()}} {{selectedMessage}} / 
+	                </span>
+	                <strong>{{rowCount.toLocaleString()}} Total</strong>
+
+	                <div class="ball-clip-rotate" style="height:20px;float:right;margin-top: 10px;"  [ngClass]="{hidden : loading !== true }">
+	                        <div>
+	                        </div>
+	                </div>
+	              </div>
+	              <datatable-pager
+	                  [pagerLeftArrowIcon]="'datatable-icon-left'"
+	                  [pagerRightArrowIcon]="'datatable-icon-right'"
+	                  [pagerPreviousIcon]="'datatable-icon-prev'"
+	                  [pagerNextIcon]="'datatable-icon-skip'"
+	                  [page]="curPage"
+	                  [size]="pageSize"
+	                  [count]="rowCount"
+	                  [hidden]="!((rowCount / pageSize) > 1)"
+	                  (change)="table.onFooterPage($event)">
+	              </datatable-pager>
+	          </ng-template>
+	        </ngx-datatable-footer>
+        </ngx-datatable>    
+    </div>
+</div>
+
+
+<div class="modal fade " bsModal #modalCrearRegla="bs-modal"  role="dialog" aria-labelledby="modalCrearRegla" aria-hidden="true" (onHidden)="hiddenModal()">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">{{titulo_modal}}</h4>
+                <button type="button" class="close pull-right" aria-label="Close" [disabled]="loading" (click)="modalCrearRegla.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form  class="form-horizontal" [formGroup]="valFormRegistrarRegla" (submit)="submitRegistrarRegla($event, valFormRegistrarRegla.value)"  >
+	            <div class="modal-body">
+	            	<div class="row">
+	                    <div class="col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label col-sm-2" >Nombre</label>
+                                <div class="col-sm-10">
+                                    <input type="text"   [formControl]=" valFormRegistrarRegla.controls['rdi_nombre']"  class="form-control input-sm "/>
+                                    <span class="text-danger" *ngIf="valFormRegistrarRegla.controls['rdi_nombre'].hasError('required') && (valFormRegistrarRegla.controls['rdi_nombre'].dirty || valFormRegistrarRegla.controls['rdi_nombre'].touched)">Nombre es obligatorio</span>
+                                </div>
+                            </div>
+	                    </div>
+	                </div>
+
+					<div class="panel panel-default panel-new">
+					    <div class="panel-heading">
+					        <div class="panel-title">Gestiones permitidas</div>
+					    </div>
+					    <div class="panel-body">
+
+			            	<div class="row">
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                    		<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_entrega']"/>
+									               <span class="fa fa-check"></span>Entregado</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_dirincompleta']"/>
+									               <span class="fa fa-check"></span>Dirección incompleta</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>
+			            	<div class="row">
+			                    <div class="col-sm-6">
+		                            <div class="form-group">		                            	
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_entregasello']"/>
+									               <span class="fa fa-check"></span>Entregado con sello</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_dirnoexiste']"/>
+									               <span class="fa fa-check"></span>Dirección no existe</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>
+			            	<div class="row">
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_entregapuerta']"/>
+									               <span class="fa fa-check"></span>Bajo puerta</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_semudo']"/>
+									               <span class="fa fa-check"></span>Se mudó</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>
+			            	<div class="row">
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_entregabuzon']"/>
+									               <span class="fa fa-check"></span>Buzón</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_ausente']"/>
+									               <span class="fa fa-check"></span>Ausente</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>
+			            	<div class="row">
+			                    <div class="col-sm-6">
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_rechazado']"/>
+									               <span class="fa fa-check"></span>Rechazado</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>
+			            	<div class="row">
+			                    <div class="col-sm-6">
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_desconocido']"/>
+									               <span class="fa fa-check"></span>Desconocido</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>
+			            	<div class="row">
+			                    <div class="col-sm-6">
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_fallecido']"/>
+									               <span class="fa fa-check"></span>Fallecido</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>
+					    </div>
+					</div>
+
+					<div class="panel panel-default panel-new">
+					    <div class="panel-heading">
+					        <div class="panel-title">Días no permitidos</div>
+					    </div>
+					    <div class="panel-body">			            	
+			            	<div class="row">
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_sabado']"/>
+									               <span class="fa fa-check"></span>No entregar Sábado</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_domingo']"/>
+									               <span class="fa fa-check"></span>No entregar Domingos</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>            	
+			            	<div class="row">
+			                    <div class="col-sm-6">
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_feriado']"/>
+									               <span class="fa fa-check"></span>No entregar en feriados</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>
+		                </div>
+		            </div>
+		            <div class="panel panel-default panel-new">
+					    <div class="panel-heading">
+					        <div class="panel-title">Días para distribución</div>
+					    </div>
+					    <div class="panel-body">			            	
+			            	<div class="row">
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+		                            	<label class="control-label col-sm-4" >Céntrico</label>
+		                                <div class="col-sm-8">
+		                                    <input type="text"   [formControl]=" valFormRegistrarRegla.controls['rdi_dias_dist_centrico']"  class="form-control input-sm "/>
+		                                    <span class="text-danger" *ngIf="valFormRegistrarRegla.controls['rdi_dias_dist_centrico'].hasError('required') && (valFormRegistrarRegla.controls['rdi_dias_dist_centrico'].dirty || valFormRegistrarRegla.controls['rdi_dias_dist_centrico'].touched)">Dato es obligatorio</span>
+		                                </div>
+	                                </div>
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+		                            	<label class="control-label col-sm-4" >Alejado</label>
+		                                <div class="col-sm-8">
+		                                    <input type="text"   [formControl]=" valFormRegistrarRegla.controls['rdi_dias_dist_alejado']"  class="form-control input-sm "/>
+		                                    <span class="text-danger" *ngIf="valFormRegistrarRegla.controls['rdi_dias_dist_alejado'].hasError('required') && (valFormRegistrarRegla.controls['rdi_dias_dist_alejado'].dirty || valFormRegistrarRegla.controls['rdi_dias_dist_alejado'].touched)">Dato es obligatorio</span>
+		                                </div>
+	                                </div>
+			                    </div>
+			                </div>            	
+			            	<div class="row">
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+	                            	  	<label class="control-label col-sm-4" >Rural</label>
+		                                <div class="col-sm-8">
+		                                    <input type="text"   [formControl]=" valFormRegistrarRegla.controls['rdi_dias_dist_rural']"  class="form-control input-sm "/>
+		                                    <span class="text-danger" *ngIf="valFormRegistrarRegla.controls['rdi_dias_dist_rural'].hasError('required') && (valFormRegistrarRegla.controls['rdi_dias_dist_rural'].dirty || valFormRegistrarRegla.controls['rdi_dias_dist_rural'].touched)">Dato es obligatorio</span>
+		                                </div>
+	                                </div>
+			                    </div>
+			                    <div class="col-sm-6">
+		                            <div class="form-group">
+	                            	  	<label class="control-label col-sm-4" >Periférico</label>
+		                                <div class="col-sm-8">
+		                                    <input type="text"   [formControl]=" valFormRegistrarRegla.controls['rdi_dias_dist_periferico']"  class="form-control input-sm "/>
+		                                    <span class="text-danger" *ngIf="valFormRegistrarRegla.controls['rdi_dias_dist_periferico'].hasError('required') && (valFormRegistrarRegla.controls['rdi_dias_dist_periferico'].dirty || valFormRegistrarRegla.controls['rdi_dias_dist_periferico'].touched)">Dato es obligatorio</span>
+		                                </div>
+	                                </div>
+			                    </div>
+			                </div>   	
+			            	<div class="row">
+			                    <div class="col-sm-12">
+		                            <div class="form-group">
+		                                <label class="control-label col-sm-2" >Balneario</label>
+		                                <div class="col-sm-10">
+		                                    <input type="text"   [formControl]=" valFormRegistrarRegla.controls['rdi_dias_dist_balneario']"  class="form-control input-sm "/>
+		                                    <span class="text-danger" *ngIf="valFormRegistrarRegla.controls['rdi_dias_dist_balneario'].hasError('required') && (valFormRegistrarRegla.controls['rdi_dias_dist_balneario'].dirty || valFormRegistrarRegla.controls['rdi_dias_dist_balneario'].touched)">Dato es obligatorio</span>
+		                                </div>
+	                                </div>
+			                    </div>
+			                </div>
+		                </div>
+		            </div>
+
+		            <div class="panel panel-default panel-new">
+					    <div class="panel-heading">
+					        <div class="panel-title">Días para distribución</div>
+					    </div>
+					    <div class="panel-body">			            	
+			            	<div class="row">
+			                    <div class="col-sm-12">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_primera_fecha']"/>
+									               <span class="fa fa-check"></span>Poner primera visita</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>            	
+			            	<div class="row">
+			                    <div class="col-sm-12">
+		                            <div class="form-group">
+			                   			<div class="col-sm-12">
+								         	<div class="checkbox c-checkbox">
+									            <label>
+									               <input type="checkbox"   [formControl]="valFormRegistrarRegla.controls['rdi_si_segunda_fecha']"/>
+									               <span class="fa fa-check"></span>Poner segunda visita</label>
+								         	</div>
+								         </div>
+	                                </div>
+			                    </div>
+			                </div>
+		                </div>
+		            </div>
+        		</div>
+	            <div class="modal-footer">
+	                <div class="ball-clip-rotate" style="height:20px;float:left;" [ngClass]="{hidden : loading !== true }">
+	                    <div></div>
+	                </div>
+	                <button [disabled]="loading"  type="submit" class="btn btn-primary">Registrar</button>
+	            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade " bsModal #modalEliminarRegla="bs-modal"  role="dialog" aria-labelledby="modalEliminarRegla" aria-hidden="true" (onHidden)="hiddenModal()">
+    <div class="modal-dialog ">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title pull-left">Eliminar regla</h4>
+                <button type="button" class="close pull-right" aria-label="Close" [disabled]="loading" (click)="modalEliminarRegla.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+            	<div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="control-label col-sm-12" >Esta seguro de eliminar la regla: {{textoRegla}}?</label>
+                            
+                        </div>
+                    </div>
+                </div>
+
+    		</div>
+            <div class="modal-footer">
+                <div class="ball-clip-rotate" style="height:20px;float:left;" [ngClass]="{hidden : loading !== true }">
+                    <div></div>
+                </div>
+                <button [disabled]="loading"  (click)="submitEliminarRegla()" class="btn btn-primary">SI</button>
+            </div>
+        </div>
+    </div>
+</div>

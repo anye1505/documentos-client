@@ -1,0 +1,159 @@
+<toaster-container [toasterconfig]="toasterconfig"></toaster-container>
+<div class="content-heading">
+    Usuario
+    <small></small>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <form [formGroup]="valForm" class="form-validate form-horizontal" (submit)="submitForm($event, valForm.value)" novalidate="">
+                <!-- START panel-->
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <fieldset class="b0">
+                            <legend>Crear</legend>
+                        </fieldset>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Usuario</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" formControlName="username" [formControl]="valForm.controls['username']" />
+                                <span class="text-danger" *ngIf="valForm.controls['username'].hasError('required') && (valForm.controls['username'].dirty || valForm.controls['username'].touched)">Usuario es obligatorio</span>
+                                <span class="text-danger" *ngIf="valForm.controls['username'].hasError('pattern') && (valForm.controls['username'].dirty || valForm.controls['username'].touched)">Solo se aceptan letras y números</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <small class="text-muted">requerido</small>
+                            </div>
+                        </div>
+                            
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Nombre</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" formControlName="name" [formControl]="valForm.controls['name']" />
+                                <span class="text-danger" *ngIf="valForm.controls['name'].hasError('required') && (valForm.controls['name'].dirty || valForm.controls['name'].touched)">Nombre es obligatorio</span>
+                                <!--<span class="text-danger" *ngIf="valForm.controls['name'].hasError('pattern') && (valForm.controls['name'].dirty || valForm.controls['name'].touched)">Solo se aceptan letras</span>-->
+                            </div>
+                            <div class="col-sm-4">
+                                <small class="text-muted">requerido</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Apellido</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="text" formControlName="surname" [formControl]="valForm.controls['surname']" />
+                                <span class="text-danger" *ngIf="valForm.controls['surname'].hasError('required') && (valForm.controls['surname'].dirty || valForm.controls['surname'].touched)">Apellido es obligatorio</span>
+                                <!--<span class="text-danger" *ngIf="valForm.controls['surname'].hasError('pattern') && (valForm.controls['surname'].dirty || valForm.controls['surname'].touched)">Solo se aceptan letras</span>-->
+                            </div>
+                            <div class="col-sm-4">
+                                <small class="text-muted">requerido</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Email</label>
+                            <div class="col-sm-6">
+                                <input class="form-control" type="email" formControlName="email" [formControl]="valForm.controls['email']" />
+                                 <span class="text-danger" *ngIf="valForm.controls['email'].hasError('required') && (valForm.controls['email'].dirty || valForm.controls['email'].touched)">Email es obligatorio</span>
+                                <span class="text-danger" *ngIf="valForm.controls['email'].hasError('email') && (valForm.controls['email'].dirty || valForm.controls['email'].touched)">Email es erroneo</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <small class="text-muted">requerido</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Empresa</label>
+                            <div class="col-sm-6">                                
+                                <ng-select
+                                        [items]="empresas" 
+                                        formControlName="empresa" 
+                                        [formControl]="valForm.controls['empresa']" 
+                                        [multiple]="false"
+                                        [closeOnSelect]="true"
+                                        bindLabel="emp_abrev"
+                                        bindValue="emp_id"
+                                        placeholder="Seleccionar"
+                                        (change)="searchSucursal($event.emp_id)"
+                                    >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.emp_abrev}}</div>
+                                        <!--<small><b>Id:</b> {{item.id}} </small>-->
+                                    </ng-template>
+                                </ng-select>
+                                 <span class="text-danger" *ngIf="valForm.controls['empresa'].hasError('required') && (valForm.controls['empresa'].dirty || valForm.controls['empresa'].touched)">Email es obligatorio</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <small class="text-muted">requerido</small>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">Sucursal</label>
+                            <div class="col-sm-6">                                
+                                <ng-select
+                                        [items]="sucursales" 
+                                        formControlName="sucursal" 
+                                        [formControl]="valForm.controls['sucursal']" 
+                                        [multiple]="false"
+                                        [closeOnSelect]="true"
+                                        bindLabel="suc_nombre"
+                                        bindValue="suc_id"
+                                        placeholder="Seleccionar"
+                                    >
+                                    <ng-template ng-option-tmp let-item="item">
+                                        <div>{{item.suc_nombre}}</div>
+                                        <!--<small><b>Id:</b> {{item.id}} </small>-->
+                                    </ng-template>
+                                </ng-select>
+                                 <span class="text-danger" *ngIf="valForm.controls['sucursal'].hasError('required') && (valForm.controls['sucursal'].dirty || valForm.controls['sucursal'].touched)">Email es obligatorio</span>
+                            </div>
+                            <div class="col-sm-4">
+                                <small class="text-muted">requerido</small>
+                            </div>
+                        </div>
+
+                        <div  formGroupName="passwordGroup">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Password</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="password" formControlName="password" [formControl]="valForm.get('passwordGroup.password')" />
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">requerido</small>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Confirmar Password</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" type="password" formControlName="confirmPassword" [formControl]="valForm.get('passwordGroup.confirmPassword')" />
+                                <span class="text-danger" *ngIf="valForm.get('passwordGroup.password').hasError('required') && (valForm.get('passwordGroup.password').dirty || valForm.get('passwordGroup.password').touched)">Contraseña obligatorio</span>
+                                <span class="text-danger" *ngIf="valForm.get('passwordGroup.confirmPassword').hasError('equalTo')">Contraseñas deben ser iguales</span>
+                                </div>
+                                <div class="col-sm-4">
+                                    <small class="text-muted">requerido</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer text-center">
+                        <div class="row">
+                            <div class="col-sm-8 control-label">
+                                <button class="btn btn-info" type="submit" [ngClass]="{disabled : formLoading === true }">Guardar</button>
+                            </div>
+                            <div class="col-sm-4 control-label">
+                                <span class="ball-clip-rotate" style="float:left;" [ngClass]="{hidden : formLoading !== true }">
+                                    <div></div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel-->
+            </form>
+        </div>
+    </div>
+    <!-- END row-->
+
+</div>
